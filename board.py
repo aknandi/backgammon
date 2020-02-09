@@ -73,7 +73,9 @@ class Board:
         return pieces[0]
 
     def get_pieces(self, colour):
-        return [x for x in self.__pieces if x.colour == colour]
+        pieces = [x for x in self.__pieces if x.colour == colour]
+        pieces.sort(key=Piece.spaces_to_home, reverse=True)
+        return pieces
 
     def has_game_ended(self):
         return len(self.get_pieces(Colour.WHITE)) == 0 or len(self.get_pieces(Colour.BLACK)) == 0
