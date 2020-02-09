@@ -6,8 +6,8 @@ from game import Game, Strategy
 
 
 class Experiment:
-    def __init__(self, white_strategy: Strategy, black_strategy: Strategy):
-        self.__games_to_play = 1000
+    def __init__(self, games_to_play: int, white_strategy: Strategy, black_strategy: Strategy):
+        self.__games_to_play = games_to_play
         self.__white_start_count = 0
         self.__white_win_count = 0
         self.__elapsed_time = 0
