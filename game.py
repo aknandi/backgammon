@@ -4,10 +4,19 @@ from board import Board
 from colour import Colour
 
 
+class Strategy:
+    def move(self, board, colour, dice_roll):
+        raise NotImplemented()
+
+
 class Game:
-    def __init__(self):
+    def __init__(self, white_strategy: Strategy, black_strategy: Strategy):
         self.board = Board.create_starting_board()
         self.first_player = Colour(randint(0, 1))
+        self.strategies = {
+            Colour.WHITE: white_strategy,
+            Colour.BLACK: black_strategy
+        }
 
     def run_game(self, verbose=True):
         if verbose:
@@ -21,7 +30,9 @@ class Game:
             colour = Colour(i % 2)
             if verbose:
                 print("%s rolled %s" % (colour, dice_roll))
-            self.make_move(dice_roll, colour)
+
+            self.strategies[colour].move(self.board, colour, dice_roll)
+
             if verbose:
                 self.board.print_board()
             i = i + 1
