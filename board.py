@@ -1,3 +1,5 @@
+from random import shuffle
+
 from colour import Colour
 from piece import Piece
 
@@ -74,7 +76,7 @@ class Board:
 
     def get_pieces(self, colour):
         pieces = [x for x in self.__pieces if x.colour == colour]
-        pieces.sort(key=Piece.spaces_to_home, reverse=True)
+        shuffle(pieces)
         return pieces
 
     def has_game_ended(self):
