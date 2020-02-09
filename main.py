@@ -1,8 +1,7 @@
 # Play backgammon
 
-from game import Game
+from experiment import Experiment
 
-game = Game()
-game.run_game(verbose=False)
-winner = game.who_won()
-print(winner)
+experiment = Experiment()
+experiment.run()
+experiment.print_results()

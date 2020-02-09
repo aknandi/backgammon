@@ -38,5 +38,8 @@ class Game:
                     self.board.move_piece(piece, die_roll)
                     break
 
+    def who_started(self):
+        return self.first_player
+
     def who_won(self):
         return self.board.who_won()
