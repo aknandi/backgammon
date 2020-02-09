@@ -33,7 +33,7 @@ class Board:
         if new_location <= 0 or new_location >= 25:
             if not self.can_move_off(piece.colour):
                 return False
-            if new_location != 0 or new_location != 25:
+            if new_location != 0 and new_location != 25:
                 # this piece will overshoot the end
                 return not any(x.spaces_to_home() >= abs(die_roll) for x in self.get_pieces(piece.colour))
             return True
@@ -71,6 +71,12 @@ class Board:
 
     def pieces_at(self, location):
         return [x for x in self.__pieces if x.location == location]
+
+    def get_piece_at(self, location):
+        pieces = self.pieces_at(location)
+        if len(pieces) == 0:
+            return None
+        return pieces[0]
 
     def get_pieces(self, colour):
         return [x for x in self.__pieces if x.colour == colour]
