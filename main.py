@@ -18,10 +18,12 @@ def make_move(board, colour):
                 break
 
 
+i = randint(0, 1)
+print('%s goes first' % Colour(i))
+
 board = Board.create_starting_board()
 board.print_board()
 
-i = 0
 while True:
     if i % 2 == 0:
         make_move(board, Colour.WHITE)
