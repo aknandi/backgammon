@@ -14,7 +14,8 @@ def make_move(board, colour):
             board.move_piece(piece, die_roll)
             break
 
-board = Board()
+
+board = Board.create_starting_board()
 board.print_board()
 
 number_of_moves = 100

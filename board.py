@@ -5,17 +5,19 @@ from piece import Piece
 class Board:
     def __init__(self):
         self.__pieces = []
-        self.setup_pieces()
 
-    def setup_pieces(self):
-        self.add_many_pieces(2, Colour.WHITE, 1)
-        self.add_many_pieces(5, Colour.BLACK, 6)
-        self.add_many_pieces(3, Colour.BLACK, 8)
-        self.add_many_pieces(5, Colour.WHITE, 12)
-        self.add_many_pieces(5, Colour.BLACK, 13)
-        self.add_many_pieces(3, Colour.WHITE, 17)
-        self.add_many_pieces(5, Colour.WHITE, 19)
-        self.add_many_pieces(2, Colour.BLACK, 24)
+    @classmethod
+    def create_starting_board(cls):
+        board = Board()
+        board.add_many_pieces(2, Colour.WHITE, 1)
+        board.add_many_pieces(5, Colour.BLACK, 6)
+        board.add_many_pieces(3, Colour.BLACK, 8)
+        board.add_many_pieces(5, Colour.WHITE, 12)
+        board.add_many_pieces(5, Colour.BLACK, 13)
+        board.add_many_pieces(3, Colour.WHITE, 17)
+        board.add_many_pieces(5, Colour.WHITE, 19)
+        board.add_many_pieces(2, Colour.BLACK, 24)
+        return board
 
     def add_many_pieces(self, number_of_pieces, colour, location):
         for i in range(number_of_pieces):
@@ -29,13 +31,16 @@ class Board:
             die_roll = -die_roll
         new_location = piece.location + die_roll
         if new_location <= 0 or new_location >= 25:
-            return self.can_move_off(piece.colour)
+            if not self.can_move_off(piece.colour):
+                return False
+            if new_location != 0 or new_location != 25:
+                # this piece will overshoot the end
+                return not any(x.spaces_to_home() >= abs(die_roll) for x in self.get_pieces(piece.colour))
+            return True
         pieces_at_new_location = self.pieces_at(new_location)
         if len(pieces_at_new_location) == 0 or len(pieces_at_new_location) == 1:
             return True
-        if self.pieces_at(new_location)[0].colour == piece.colour:
-            return True
-        return False
+        return self.pieces_at(new_location)[0].colour == piece.colour
 
     def can_move_off(self, colour):
         return all(x.spaces_to_home() <= 6 for x in self.get_pieces(colour))
