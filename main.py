@@ -21,13 +21,15 @@ def make_move(board, colour):
 board = Board.create_starting_board()
 board.print_board()
 
-number_of_moves = 20
 i = 0
-while i < number_of_moves:
+while True:
     if i % 2 == 0:
         make_move(board, Colour.WHITE)
     else:
         make_move(board, Colour.BLACK)
     board.print_board()
     i = i + 1
+    if board.has_game_ended():
+        print('%s has won!' % board.who_won())
+        break
 

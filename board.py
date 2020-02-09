@@ -75,6 +75,14 @@ class Board:
     def get_pieces(self, colour):
         return [x for x in self.__pieces if x.colour == colour]
 
+    def has_game_ended(self):
+        return len(self.get_pieces(Colour.WHITE)) == 0 or len(self.get_pieces(Colour.BLACK)) == 0
+
+    def who_won(self):
+        if not self.has_game_ended():
+            raise Exception('The game has not finished yet!')
+        return Colour.WHITE if len(self.get_pieces(Colour.WHITE)) == 0 else Colour.BLACK
+
     def print_board(self):
         print("---------------------------------------------------")
         line = "|"
