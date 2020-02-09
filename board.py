@@ -24,8 +24,8 @@ class Board:
             self.__pieces.append(Piece(colour, location))
 
     def is_move_possible(self, piece, die_roll):
-        if len(self.pieces_at(self.taken_location(piece.colour))) > 0:
-            if piece.location != self.taken_location(piece.colour):
+        if len(self.pieces_at(self.__taken_location(piece.colour))) > 0:
+            if piece.location != self.__taken_location(piece.colour):
                 return False
         if piece.colour == Colour.BLACK:
             die_roll = -die_roll
@@ -53,21 +53,15 @@ class Board:
 
         new_location = piece.location + die_roll
         if new_location <= 0 or new_location >= 25:
-            self.remove_piece(piece)
+            self.__remove_piece(piece)
 
         pieces_at_new_location = self.pieces_at(new_location)
 
         if len(pieces_at_new_location) == 1 and pieces_at_new_location[0].colour != piece.colour:
             piece_to_take = pieces_at_new_location[0]
-            piece_to_take.location = self.taken_location(piece_to_take.colour)
+            piece_to_take.location = self.__taken_location(piece_to_take.colour)
 
         piece.location = new_location
-
-    def taken_location(self, colour):
-        if colour == Colour.WHITE:
-            return 0
-        else:
-            return 25
 
     def pieces_at(self, location):
         return [x for x in self.__pieces if x.location == location]
@@ -81,7 +75,36 @@ class Board:
     def get_pieces(self, colour):
         return [x for x in self.__pieces if x.colour == colour]
 
-    def pieces_at_text(self, location):
+    def print_board(self):
+        print("---------------------------------------------------")
+        line = "|"
+        for i in range(13, 18 + 1):
+            line = line + self.__pieces_at_text(i)
+        line = line + "|"
+        for i in range(19, 24 + 1):
+            line = line + self.__pieces_at_text(i)
+        line = line + "|"
+        line = line + self.__pieces_at_text(self.__taken_location(Colour.BLACK))
+        print(line)
+        print("|                        |                        |")
+        line = "|"
+        for i in reversed(range(7, 12+1)):
+            line = line + self.__pieces_at_text(i)
+        line = line + "|"
+        for i in reversed(range(1, 6+1)):
+            line = line + self.__pieces_at_text(i)
+        line = line + "|"
+        line = line + self.__pieces_at_text(self.__taken_location(Colour.WHITE))
+        print(line)
+        print("---------------------------------------------------")
+
+    def __taken_location(self, colour):
+        if colour == Colour.WHITE:
+            return 0
+        else:
+            return 25
+
+    def __pieces_at_text(self, location):
         pieces = self.pieces_at(location)
         if len(pieces) == 0:
             return " .  "
@@ -90,29 +113,5 @@ class Board:
         else:
             return " %sB " % (len(pieces))
 
-    def print_board(self):
-        print("---------------------------------------------------")
-        line = "|"
-        for i in range(13, 18 + 1):
-            line = line + self.pieces_at_text(i)
-        line = line + "|"
-        for i in range(19, 24 + 1):
-            line = line + self.pieces_at_text(i)
-        line = line + "|"
-        line = line + self.pieces_at_text(self.taken_location(Colour.BLACK))
-        print(line)
-        print("|                        |                        |")
-        line = "|"
-        for i in reversed(range(7, 12+1)):
-            line = line + self.pieces_at_text(i)
-        line = line + "|"
-        for i in reversed(range(1, 6+1)):
-            line = line + self.pieces_at_text(i)
-        line = line + "|"
-        line = line + self.pieces_at_text(self.taken_location(Colour.WHITE))
-        print(line)
-        print("---------------------------------------------------")
-
-    def remove_piece(self, piece):
+    def __remove_piece(self, piece):
         self.__pieces.remove(piece)
-
