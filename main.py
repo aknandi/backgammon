@@ -8,5 +8,6 @@ experiment = Experiment(
     white_strategy=MoveFurthestBackStrategy(),
     black_strategy=MoveRandomPiece()
 )
-experiment.run()
-experiment.print_results()
+if __name__ == '__main__':
+    experiment.run()
+    experiment.print_results()
