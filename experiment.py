@@ -1,5 +1,6 @@
 import multiprocessing as mp
 import time
+from random import randint
 
 from colour import Colour
 from game import Game, Strategy
@@ -37,7 +38,11 @@ class GamePlayer:
         self.__white_strategy = white_strategy
         self.__black_strategy = black_strategy
 
-    def __call__(self, src):
-        game = Game(self.__white_strategy, self.__black_strategy)
+    def __call__(self, game_index):
+        game = Game(
+            white_strategy=self.__white_strategy,
+            black_strategy=self.__black_strategy,
+            first_player=Colour(randint(0, 1))
+        )
         game.run_game(verbose=False)
         return game.who_started(), game.who_won()

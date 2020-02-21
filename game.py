@@ -10,9 +10,9 @@ class Strategy:
 
 
 class Game:
-    def __init__(self, white_strategy: Strategy, black_strategy: Strategy):
+    def __init__(self, white_strategy: Strategy, black_strategy: Strategy, first_player: Colour):
         self.board = Board.create_starting_board()
-        self.first_player = Colour(randint(0, 1))
+        self.first_player = first_player
         self.strategies = {
             Colour.WHITE: white_strategy,
             Colour.BLACK: black_strategy
