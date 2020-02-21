@@ -7,30 +7,40 @@ from game import Game, Strategy
 
 
 class Experiment:
-    def __init__(self, games_to_play: int, white_strategy: Strategy, black_strategy: Strategy):
+    def __init__(self, games_to_play: int, white_strategy: Strategy, black_strategy: Strategy, parallelise: bool = True):
         self.__games_to_play = games_to_play
-        self.__white_start_count = 0
-        self.__white_win_count = 0
+        self.__results = []
         self.__elapsed_time = 0
         self.__white_strategy = white_strategy
         self.__black_strategy = black_strategy
+        self.__parallelise = parallelise
 
     def run(self):
         start_time = time.time()
 
-        pool = mp.Pool(mp.cpu_count())
-        result = pool.map(GamePlayer(self.__white_strategy, self.__black_strategy), range(self.__games_to_play))
-        pool.close()
+        player = GamePlayer(self.__white_strategy, self.__black_strategy)
+        index_range = range(self.__games_to_play)
 
-        self.__white_start_count = sum(1 for x in result if x[0] == Colour.WHITE)
-        self.__white_win_count = sum(1 for x in result if x[1] == Colour.WHITE)
+        if self.__parallelise:
+            pool = mp.Pool(mp.cpu_count())
+            self.__results = pool.map(player, index_range)
+            pool.close()
+        else:
+            self.__results = [player.__call__(i) for i in index_range]
+
         self.__elapsed_time = time.time() - start_time
 
     def print_results(self):
+        white_start_count = sum(1 for x in self.__results if x[0] == Colour.WHITE)
+        white_win_count = self.get_white_wins()
+
         print("After %d games" % self.__games_to_play)
-        print("White starts: %d" % self.__white_start_count)
-        print("White wins: %d" % self.__white_win_count)
+        print("White starts: %d" % white_start_count)
+        print("White wins: %d" % white_win_count)
         print("Time taken: %.2f s" % self.__elapsed_time)
+
+    def get_white_wins(self):
+        return sum(1 for x in self.__results if x[1] == Colour.WHITE)
 
 
 class GamePlayer:
