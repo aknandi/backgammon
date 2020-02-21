@@ -48,6 +48,8 @@ class Board:
         return all(x.spaces_to_home() <= 6 for x in self.get_pieces(colour))
 
     def move_piece(self, piece, die_roll):
+        if not self.__pieces.__contains__(piece):
+            raise Exception('This piece does not belong to this board')
         if not self.is_move_possible(piece, die_roll):
             raise Exception('You cannot make this move')
         if piece.colour == Colour.BLACK:
