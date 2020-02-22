@@ -93,6 +93,7 @@ class Board:
         return Colour.WHITE if len(self.get_pieces(Colour.WHITE)) == 0 else Colour.BLACK
 
     def print_board(self):
+        print("  13                  18   19                  24   25")
         print("---------------------------------------------------")
         line = "|"
         for i in range(13, 18 + 1):
@@ -103,7 +104,8 @@ class Board:
         line = line + "|"
         line = line + self.__pieces_at_text(self.__taken_location(Colour.BLACK))
         print(line)
-        print("|                        |                        |")
+        for _ in range(3):
+            print("|                        |                        |")
         line = "|"
         for i in reversed(range(7, 12+1)):
             line = line + self.__pieces_at_text(i)
@@ -114,6 +116,7 @@ class Board:
         line = line + self.__pieces_at_text(self.__taken_location(Colour.WHITE))
         print(line)
         print("---------------------------------------------------")
+        print("  12                  7    6                   1    0")
 
     def __taken_location(self, colour):
         if colour == Colour.WHITE:
