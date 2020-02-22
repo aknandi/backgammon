@@ -44,7 +44,7 @@ class Experiment:
         print("White starts: %d" % white_start_count)
         print("White wins: %d" % white_win_count)
         print("Time taken: %.2f s" % self.__elapsed_time)
-        print("Assuming the strategies are equally as good, ",
+        print("Assuming the strategies are equally as good,",
               "the probability of this discrepancy in wins is %.8f" % probability)
 
     def get_white_wins(self):

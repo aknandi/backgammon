@@ -1,16 +1,18 @@
 # Play backgammon
 
 from experiment import Experiment
-from strategies import MoveFurthestBackStrategy, MoveRandomPiece
+from game import Game
+from strategies import MoveFurthestBackStrategy, MoveRandomPiece, CompareAllMoves
 
 experiment = Experiment(
     games_to_play=1000,
     white_strategy=MoveFurthestBackStrategy(),
-    black_strategy=MoveRandomPiece()
+    black_strategy=CompareAllMoves()
 )
 if __name__ == '__main__':
     experiment.run()
     experiment.print_results()
+
 
 # Null hypothesis is that the strategies equally good
 # Define a joint event of a random coin toss to determine who starts followed by a game,
