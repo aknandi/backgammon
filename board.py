@@ -81,6 +81,9 @@ class Board:
         shuffle(pieces)
         return pieces
 
+    def get_taken_pieces(self, colour):
+        return self.pieces_at(self.__taken_location(colour))
+
     def has_game_ended(self):
         return len(self.get_pieces(Colour.WHITE)) == 0 or len(self.get_pieces(Colour.BLACK)) == 0
 
