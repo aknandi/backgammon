@@ -22,7 +22,7 @@ class Board:
         return board
 
     def add_many_pieces(self, number_of_pieces, colour, location):
-        for i in range(number_of_pieces):
+        for _ in range(number_of_pieces):
             self.__pieces.append(Piece(colour, location))
 
     def is_move_possible(self, piece, die_roll):
