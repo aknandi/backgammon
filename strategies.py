@@ -27,15 +27,17 @@ class MoveFurthestBackOrderDiceStrategy(Strategy):
 
 
 class HumanStrategy(Strategy):
+    def __init__(self, name):
+        self.__name = name
+
     def move(self, board, colour, dice_roll):
-        print("It is your turn, you are %s, your roll is %s" % (colour, dice_roll))
+        print("It is %s's turn, you are %s, your roll is %s" % (self.__name, colour, dice_roll))
         while len(dice_roll) > 0:
             board.print_board()
             print("You have %s left" % dice_roll)
             location = self.get_location(board, colour)
             piece = board.get_piece_at(location)
-            die_roll = None
-            while die_roll is None:
+            while True:
                 try:
                     value = int(input("How far (or 0 to move another piece)?\n"))
                     if value == 0:
@@ -44,10 +46,10 @@ class HumanStrategy(Strategy):
                         print("You can't make that move!")
                     else:
                         dice_roll.remove(value)
-                        die_roll = value
-                        board.move_piece(piece, die_roll)
+                        board.move_piece(piece, value)
                         print("")
                         print("")
+                        break
                 except ValueError:
                     print("That's not a number! Try again")
         print("Done!")
