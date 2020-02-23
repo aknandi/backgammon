@@ -1,8 +1,7 @@
 # Play backgammon
-
+from compare_all_moves_strategy import CompareAllMoves
 from experiment import Experiment
-from game import Game
-from strategies import MoveFurthestBackStrategy, MoveRandomPiece, CompareAllMoves
+from strategies import MoveFurthestBackStrategy
 
 experiment = Experiment(
     games_to_play=1000,
