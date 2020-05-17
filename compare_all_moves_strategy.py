@@ -1,6 +1,8 @@
 import copy
 
 from game import Strategy
+from piece import Piece
+
 
 def evaluate_board(myboard, colour):
     pieces = myboard.get_pieces(colour)
@@ -24,15 +26,22 @@ def evaluate_board(myboard, colour):
 
 class CompareAllMoves(Strategy):
     def move(self, board, colour, dice_roll):
-        valid_pieces = board.get_pieces(colour)
         best_board_value = float('inf')
         best_pieces_to_move = None
+
+        valid_pieces = board.get_pieces(colour)
+        valid_pieces.sort(key=Piece.spaces_to_home, reverse=True)
+        if len(valid_pieces) == 1:
+            die_to_use = max(dice_roll[0], dice_roll[1])
+            board.move_piece(valid_pieces[0], die_to_use)
+            return 0
         for piece1 in valid_pieces:
             if board.is_move_possible(piece1, dice_roll[0]):
                 board1 = copy.deepcopy(board)
                 new_piece = board1.get_piece_at(piece1.location)
                 board1.move_piece(new_piece, dice_roll[0])
                 valid_pieces2 = board1.get_pieces(colour)
+                valid_pieces2.sort(key=Piece.spaces_to_home, reverse=True)
                 for piece2 in valid_pieces2:
                     if board1.is_move_possible(piece2, dice_roll[1]):
                         board2 = copy.deepcopy(board1)
@@ -45,3 +54,5 @@ class CompareAllMoves(Strategy):
         if best_pieces_to_move is not None:
             board.move_piece(board.get_piece_at(best_pieces_to_move[0]), dice_roll[0])
             board.move_piece(board.get_piece_at(best_pieces_to_move[1]), dice_roll[1])
+
+        return 0
