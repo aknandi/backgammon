@@ -31,6 +31,18 @@ class TestCompareAllMovesStrategy(TestBoardBase):
         self.assert_location(20, Contains(2).pieces())
         self.assert_location(16, Contains(1).pieces())
 
+    def test_one_is_not_left_alone(self):
+        self.add_many_pieces(3, Colour.WHITE, 12)
+        self.add_many_pieces(2, Colour.WHITE, 17)
+        self.add_many_pieces(2, Colour.WHITE, 19)
+
+        strategy = CompareAllMoves()
+        strategy.move(self.board, Colour.WHITE, [5, 2])
+
+        self.assert_location(12, Contains(2).pieces())
+        self.assert_location(17, Contains(2).pieces())
+        self.assert_location(19, Contains(3).pieces())
+
 
 class TestCompareAllMovesValidity(TestBoardBase):
 
