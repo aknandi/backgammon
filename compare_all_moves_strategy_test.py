@@ -5,9 +5,9 @@ from compare_all_moves_strategy import CompareAllMoves
 from test_board_base import TestBoardBase, Contains
 
 
-class TestBoardIsMovePossible(TestBoardBase):
+class TestCompareAllMovesStrategy(TestBoardBase):
 
-    def test_moves(self):
+    def test_pieces_will_double_up(self):
 
         self.add_many_pieces(1, Colour.WHITE, 1)
         self.add_many_pieces(1, Colour.WHITE, 3)
@@ -16,6 +16,23 @@ class TestBoardIsMovePossible(TestBoardBase):
         strategy.move(self.board, Colour.WHITE, [6, 4])
 
         self.assert_location(7, Contains(2).pieces())
+
+    def test_will_form_wall(self):
+
+        self.add_many_pieces(2, Colour.WHITE, 20)
+        self.add_many_pieces(1, Colour.WHITE, 16)
+        self.add_many_pieces(1, Colour.WHITE, 17)
+        self.add_many_pieces(1, Colour.WHITE, 18)
+
+        strategy = CompareAllMoves()
+        strategy.move(self.board, Colour.WHITE, [3, 4])
+
+        self.assert_location(21, Contains(2).pieces())
+        self.assert_location(20, Contains(2).pieces())
+        self.assert_location(16, Contains(1).pieces())
+
+
+class TestCompareAllMovesValidity(TestBoardBase):
 
     def test_make_single_move_to_win(self):
 
