@@ -26,33 +26,41 @@ def evaluate_board(myboard, colour):
 
 class CompareAllMoves(Strategy):
     def move(self, board, colour, dice_roll):
+
+        result = self.move_recursively(board, colour, dice_roll)
+
+        if result['best_moves'] is not None:
+            for i in range(len(result['best_moves'])):
+                board.move_piece(board.get_piece_at(result['best_moves'][i]), dice_roll[i])
+
+
+    def move_recursively(self, board, colour, dice_rolls):
         best_board_value = float('inf')
         best_pieces_to_move = None
 
         valid_pieces = board.get_pieces(colour)
         valid_pieces.sort(key=Piece.spaces_to_home, reverse=True)
-        if len(valid_pieces) == 1:
-            die_to_use = max(dice_roll[0], dice_roll[1])
-            board.move_piece(valid_pieces[0], die_to_use)
-            return 0
-        for piece1 in valid_pieces:
-            if board.is_move_possible(piece1, dice_roll[0]):
-                board1 = copy.deepcopy(board)
-                new_piece = board1.get_piece_at(piece1.location)
-                board1.move_piece(new_piece, dice_roll[0])
-                valid_pieces2 = board1.get_pieces(colour)
-                valid_pieces2.sort(key=Piece.spaces_to_home, reverse=True)
-                for piece2 in valid_pieces2:
-                    if board1.is_move_possible(piece2, dice_roll[1]):
-                        board2 = copy.deepcopy(board1)
-                        new_piece = board2.get_piece_at(piece2.location)
-                        board2.move_piece(new_piece, dice_roll[1])
-                        board_value = evaluate_board(board2, colour)
-                        if board_value < best_board_value:
-                            best_board_value = board_value
-                            best_pieces_to_move = [piece1.location, piece2.location]
-        if best_pieces_to_move is not None:
-            board.move_piece(board.get_piece_at(best_pieces_to_move[0]), dice_roll[0])
-            board.move_piece(board.get_piece_at(best_pieces_to_move[1]), dice_roll[1])
 
-        return 0
+        dice_rolls_left = dice_rolls.copy()
+        die_roll = dice_rolls_left.pop(0)
+
+        for piece in valid_pieces:
+            if board.is_move_possible(piece, die_roll):
+                board_copy = copy.deepcopy(board)
+                new_piece = board_copy.get_piece_at(piece.location)
+                board_copy.move_piece(new_piece, die_roll)
+                valid_pieces_new = board_copy.get_pieces(colour)
+                if len(valid_pieces_new) > 0 and len(dice_rolls_left) > 0:
+                    result = self.move_recursively(board_copy, colour, dice_rolls_left)
+                    if result['best_value'] < best_board_value:
+                        best_board_value = result['best_value']
+                        best_pieces_to_move = [piece.location] + result['best_moves']
+                else:
+                    board_value = evaluate_board(board_copy, colour)
+                    if board_value < best_board_value:
+                        best_board_value = board_value
+                        best_pieces_to_move = [piece.location]
+
+
+        return {'best_value': best_board_value, 'best_moves': best_pieces_to_move}
+
