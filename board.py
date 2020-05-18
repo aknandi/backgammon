@@ -1,4 +1,6 @@
 from random import shuffle
+import copy
+import json
 
 from colour import Colour
 from piece import Piece
@@ -92,6 +94,9 @@ class Board:
             raise Exception('The game has not finished yet!')
         return Colour.WHITE if len(self.get_pieces(Colour.WHITE)) == 0 else Colour.BLACK
 
+    def create_copy(self):
+        return copy.deepcopy(self)
+
     def print_board(self):
         print("  13                  18   19                  24   25")
         print("---------------------------------------------------")
@@ -117,6 +122,14 @@ class Board:
         print(line)
         print("---------------------------------------------------")
         print("  12                  7    6                   1    0")
+
+    def to_json(self):
+        data = {}
+        for location in range(26):
+            pieces = self.pieces_at(location)
+            if len(pieces) > 0:
+                data[location] = {'colour': pieces[0].colour.__str__(), 'count': len(pieces)}
+        return json.dumps(data)
 
     def __taken_location(self, colour):
         if colour == Colour.WHITE:

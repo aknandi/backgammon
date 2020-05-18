@@ -57,6 +57,7 @@ class GamePlayer:
         self.__black_strategy = black_strategy
 
     def __call__(self, game_index):
+        print(".", end="")
         game = Game(
             white_strategy=self.__white_strategy,
             black_strategy=self.__black_strategy,

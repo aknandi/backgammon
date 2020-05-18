@@ -1,5 +1,3 @@
-import copy
-
 from game import Strategy
 from piece import Piece
 
@@ -25,7 +23,7 @@ def evaluate_board(myboard, colour):
 
 
 class CompareAllMoves(Strategy):
-    def move(self, board, colour, dice_roll):
+    def move(self, board, colour, dice_roll, make_move):
 
         result = self.move_recursively(board, colour, dice_roll)
         if len(result['pieces_to_try_swapped']) > 0:
@@ -39,7 +37,7 @@ class CompareAllMoves(Strategy):
 
         if result['best_moves'] is not None:
             for move in result['best_moves']:
-                board.move_piece(board.get_piece_at(move['piece_at']), move['die_roll'])
+                make_move(move['piece_at'], move['die_roll'])
 
     def move_recursively(self, board, colour, dice_rolls, pieces_to_try=None):
         best_board_value = float('inf')
@@ -61,7 +59,7 @@ class CompareAllMoves(Strategy):
 
         for piece in valid_pieces:
             if board.is_move_possible(piece, die_roll):
-                board_copy = copy.deepcopy(board)
+                board_copy = board.create_copy()
                 new_piece = board_copy.get_piece_at(piece.location)
                 board_copy.move_piece(new_piece, die_roll)
                 if len(dice_rolls_left) > 0:

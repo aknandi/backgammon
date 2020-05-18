@@ -1,3 +1,4 @@
+import json
 from random import randint
 
 from board import Board
@@ -5,8 +6,31 @@ from colour import Colour
 
 
 class Strategy:
-    def move(self, board, colour, dice_roll):
+    def move(self, board, colour, dice_roll, make_move):
         raise NotImplemented()
+
+
+class ReadOnlyBoard:
+    board: Board
+
+    def __init__(self, board):
+        self.board = board
+
+    # Delegate all readonly method calls to the board
+    def __getattr__(self, name):
+        if hasattr(self.board, name) and callable(getattr(self.board, name)):
+            return getattr(self.board, name)
+
+        return super(ReadOnlyBoard, self).__getattr__(name)
+
+    def add_many_pieces(self, number_of_pieces, colour, location):
+        self.__raise_exception__()
+
+    def move_piece(self, piece, die_roll):
+        self.__raise_exception__()
+
+    def __raise_exception__(self):
+        raise Exception("Do not try and change the board directly, use the make_move parameter instead")
 
 
 class Game:
@@ -31,7 +55,36 @@ class Game:
             if verbose:
                 print("%s rolled %s" % (colour, dice_roll))
 
-            self.strategies[colour].move(self.board, colour, dice_roll)
+            def handle_move(location, die_roll):
+                if not dice_roll.__contains__(die_roll):
+                    raise Exception("%d is not a roll that's allowed" % die_roll)
+                piece = self.board.get_piece_at(location)
+                self.board.move_piece(piece, die_roll)
+                dice_roll.remove(die_roll)
+
+            board_snapshot = self.board.to_json()
+            dice_roll_snapshot = dice_roll.copy()
+
+            self.strategies[colour].move(
+                ReadOnlyBoard(self.board),
+                colour,
+                dice_roll.copy(),
+                lambda location, die_roll: handle_move(location, die_roll)
+            )
+
+            if verbose and len(dice_roll) > 0:
+                print('FYI not all moves were made. %s playing %s did not move %s' % (
+                    colour,
+                    self.strategies[colour].__class__.__name__,
+                    dice_roll))
+                self.board.print_board()
+                state = {
+                    'board': json.loads(board_snapshot),
+                    'dice_roll': dice_roll_snapshot,
+                    'colour_to_move': colour.__str__(),
+                    'strategy': self.strategies[colour].__class__.__name__,
+                }
+                print(json.dumps(state))
 
             if verbose:
                 self.board.print_board()
