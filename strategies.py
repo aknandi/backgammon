@@ -6,13 +6,26 @@ from piece import Piece
 
 class MoveFurthestBackStrategy(Strategy):
     def move(self, board, colour, dice_roll, make_move):
-        for die_roll in dice_roll:
-            valid_pieces = board.get_pieces(colour)
-            valid_pieces.sort(key=Piece.spaces_to_home, reverse=True)
-            for piece in valid_pieces:
-                if board.is_move_possible(piece, die_roll):
-                    make_move(piece.location, die_roll)
-                    break
+        could_not_move_first_roll = False
+
+        for i, die_roll in enumerate(dice_roll):
+            moved = self.move_die_roll(board, colour, die_roll, make_move)
+            if not moved and i == 0:
+                could_not_move_first_roll = True
+
+        if could_not_move_first_roll:
+            self.move_die_roll(board, colour, dice_roll[0], make_move)
+
+    @staticmethod
+    def move_die_roll(board, colour, die_roll, make_move):
+        valid_pieces = board.get_pieces(colour)
+        valid_pieces.sort(key=Piece.spaces_to_home, reverse=True)
+        for piece in valid_pieces:
+            if board.is_move_possible(piece, die_roll):
+                make_move(piece.location, die_roll)
+                return True
+
+        return False
 
 
 class MoveFurthestBackOrderDiceStrategy(Strategy):
