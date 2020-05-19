@@ -32,16 +32,17 @@ class CompareAllMoves(Strategy):
             result_swapped = self.move_recursively(board, colour,
                                                    dice_rolls=new_dice_roll,
                                                    pieces_to_try=result['pieces_to_try_swapped'])
-            if result_swapped['best_value'] < result['best_value']:
+            if result_swapped['best_value'] < result['best_value'] and \
+                    len(result_swapped['best_moves']) >= len(result['best_moves']):
                 result = result_swapped
 
-        if result['best_moves'] is not None:
+        if len(result['best_moves']) != 0:
             for move in result['best_moves']:
                 make_move(move['piece_at'], move['die_roll'])
 
     def move_recursively(self, board, colour, dice_rolls, pieces_to_try=None):
         best_board_value = float('inf')
-        best_pieces_to_move = None
+        best_pieces_to_move = []
         pieces_to_try_swapped = []
 
         if pieces_to_try is None:
@@ -64,20 +65,21 @@ class CompareAllMoves(Strategy):
                 board_copy.move_piece(new_piece, die_roll)
                 if len(dice_rolls_left) > 0:
                     result = self.move_recursively(board_copy, colour, dice_rolls_left)
-                    if result['best_moves'] is None:
+                    if len(result['best_moves']) == 0:
                         # we have done the best we can do
                         board_value = evaluate_board(board_copy, colour)
-                        if board_value < best_board_value:
-                            # Problem here: if it gives a better value to make less moves, this will be done.
+                        if board_value < best_board_value and len(best_pieces_to_move) < 2:
                             best_board_value = board_value
                             best_pieces_to_move = [{'die_roll': die_roll, 'piece_at': piece.location}]
-                    if result['best_value'] < best_board_value:
-                        best_board_value = result['best_value']
-                        move = {'die_roll': die_roll, 'piece_at': piece.location}
-                        best_pieces_to_move = [move] + result['best_moves']
+                    elif result['best_value'] < best_board_value:
+                        new_best_moves_length = len(result['best_moves']) + 1
+                        if new_best_moves_length >= len(best_pieces_to_move):
+                            best_board_value = result['best_value']
+                            move = {'die_roll': die_roll, 'piece_at': piece.location}
+                            best_pieces_to_move = [move] + result['best_moves']
                 else:
                     board_value = evaluate_board(board_copy, colour)
-                    if board_value < best_board_value:
+                    if board_value < best_board_value and len(best_pieces_to_move) < 2:
                         best_board_value = board_value
                         best_pieces_to_move = [{'die_roll': die_roll, 'piece_at': piece.location}]
             elif len(dice_rolls_left) != 0 and (die_roll != dice_rolls_left[0]):

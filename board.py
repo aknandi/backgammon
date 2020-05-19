@@ -97,6 +97,9 @@ class Board:
     def create_copy(self):
         return copy.deepcopy(self)
 
+    def get_move_lambda(self):
+        return lambda l, r: self.move_piece(self.get_piece_at(l), r)
+
     def print_board(self):
         print("  13                  18   19                  24   25")
         print("---------------------------------------------------")
