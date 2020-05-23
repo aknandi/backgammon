@@ -96,12 +96,19 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(2, Colour.BLACK, 22)
 
         strategy = CompareAllMoves()
-        strategy.move(self.board, Colour.WHITE, [1, 2], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda())
 
         self.assert_location(13, Contains(1).pieces())
-        self.assert_location(15, Contains(1).pieces())
-        self.assert_location(19, Contains(1).pieces())
-        self.assert_location(20, Contains(1).pieces())
+
+    def test_order_of_moves_for_single_piece(self):
+        self.add_many_pieces(1, Colour.WHITE, 13)
+        self.add_many_pieces(1, Colour.BLACK, 14)
+
+        strategy = CompareAllMoves()
+        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda())
+
+        self.assert_location(25, Contains(1).pieces())
+
 
 if __name__ == '__main__':
     unittest.main()

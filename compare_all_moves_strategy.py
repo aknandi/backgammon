@@ -26,12 +26,12 @@ class CompareAllMoves(Strategy):
     def move(self, board, colour, dice_roll, make_move):
 
         result = self.move_recursively(board, colour, dice_roll)
-        if len(result['pieces_to_try_swapped']) > 0:
+        not_a_double = len(dice_roll) == 2
+        if not_a_double:
             new_dice_roll = dice_roll.copy()
             new_dice_roll.reverse()
             result_swapped = self.move_recursively(board, colour,
-                                                   dice_rolls=new_dice_roll,
-                                                   pieces_to_try=result['pieces_to_try_swapped'])
+                                                   dice_rolls=new_dice_roll)
             if result_swapped['best_value'] < result['best_value'] and \
                     len(result_swapped['best_moves']) >= len(result['best_moves']):
                 result = result_swapped
@@ -40,14 +40,11 @@ class CompareAllMoves(Strategy):
             for move in result['best_moves']:
                 make_move(move['piece_at'], move['die_roll'])
 
-    def move_recursively(self, board, colour, dice_rolls, pieces_to_try=None):
+    def move_recursively(self, board, colour, dice_rolls):
         best_board_value = float('inf')
         best_pieces_to_move = []
-        pieces_to_try_swapped = []
 
-        if pieces_to_try is None:
-            pieces_to_try = [x.location for x in board.get_pieces(colour)]
-
+        pieces_to_try = [x.location for x in board.get_pieces(colour)]
         pieces_to_try = list(set(pieces_to_try))
 
         valid_pieces = []
@@ -82,10 +79,7 @@ class CompareAllMoves(Strategy):
                     if board_value < best_board_value and len(best_pieces_to_move) < 2:
                         best_board_value = board_value
                         best_pieces_to_move = [{'die_roll': die_roll, 'piece_at': piece.location}]
-            elif len(dice_rolls_left) != 0 and (die_roll != dice_rolls_left[0]):
-                pieces_to_try_swapped.append(piece.location)
 
         return {'best_value': best_board_value,
-                'best_moves': best_pieces_to_move,
-                'pieces_to_try_swapped': pieces_to_try_swapped}
+                'best_moves': best_pieces_to_move}
 
