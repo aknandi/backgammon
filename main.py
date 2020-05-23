@@ -4,7 +4,7 @@ from experiment import Experiment
 from strategies import MoveFurthestBackStrategy
 
 experiment = Experiment(
-    games_to_play=1000,
+    games_to_play=100,
     white_strategy=MoveFurthestBackStrategy(),
     black_strategy=CompareAllMoves()
 )
