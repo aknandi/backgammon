@@ -46,7 +46,7 @@ class HumanStrategy(Strategy):
 
     def move(self, board, colour, dice_roll, make_move):
         print("It is %s's turn, you are %s, your roll is %s" % (self.__name, colour, dice_roll))
-        while len(dice_roll) > 0:
+        while len(dice_roll) > 0 and not board.has_game_ended():
             board.print_board()
             print("You have %s left" % dice_roll)
             location = self.get_location(board, colour)
