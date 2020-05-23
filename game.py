@@ -9,6 +9,18 @@ class Strategy:
     def move(self, board, colour, dice_roll, make_move):
         raise NotImplemented()
 
+    @staticmethod
+    def create_by_name(strategy_name):
+        for strategy in Strategy.get_all():
+            if strategy.__name__ == strategy_name:
+                return strategy()
+
+        raise Exception("Cannot find strategy %s" % strategy_name)
+
+    @staticmethod
+    def get_all():
+        return Strategy.__subclasses__()
+
 
 class ReadOnlyBoard:
     board: Board
