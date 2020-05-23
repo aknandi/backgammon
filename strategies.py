@@ -1,10 +1,18 @@
 from random import shuffle
-
-from game import Strategy
 from piece import Piece
 
 
+class Strategy:
+    def move(self, board, colour, dice_roll, make_move):
+        raise NotImplemented()
+
+
 class MoveFurthestBackStrategy(Strategy):
+
+    @staticmethod
+    def get_difficulty():
+        return "Medium"
+
     def move(self, board, colour, dice_roll, make_move):
         could_not_move_first_roll = False
 
@@ -31,6 +39,10 @@ class MoveFurthestBackStrategy(Strategy):
 class HumanStrategy(Strategy):
     def __init__(self, name):
         self.__name = name
+
+    @staticmethod
+    def get_difficulty():
+        return "N/A"
 
     def move(self, board, colour, dice_roll, make_move):
         print("It is %s's turn, you are %s, your roll is %s" % (self.__name, colour, dice_roll))
@@ -72,6 +84,11 @@ class HumanStrategy(Strategy):
 
 
 class MoveRandomPiece(Strategy):
+
+    @staticmethod
+    def get_difficulty():
+        return "Easy"
+
     def move(self, board, colour, dice_roll, make_move):
         for die_roll in dice_roll:
             valid_pieces = board.get_pieces(colour)

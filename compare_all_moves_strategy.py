@@ -1,4 +1,4 @@
-from game import Strategy
+from strategies import Strategy
 from piece import Piece
 
 
@@ -23,6 +23,11 @@ def evaluate_board(myboard, colour):
 
 
 class CompareAllMoves(Strategy):
+
+    @staticmethod
+    def get_difficulty():
+        return "Hard"
+
     def move(self, board, colour, dice_roll, make_move):
 
         result = self.move_recursively(board, colour, dice_roll)

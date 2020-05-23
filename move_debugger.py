@@ -2,14 +2,13 @@ import json
 
 from board import Board
 from colour import Colour
-from game import Strategy
-
+from strategy_factory import StrategyFactory
 
 if __name__ == '__main__':
     s = input('Paste move info:\n')
     data = json.loads(s)
 
-    strategy = Strategy.create_by_name(data['strategy'])
+    strategy = StrategyFactory.create_by_name(data['strategy'])
 
     board = Board()
     for location, value in data['board'].items():

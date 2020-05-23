@@ -3,7 +3,8 @@ import time
 from random import randint
 
 from colour import Colour
-from game import Game, Strategy
+from game import Game
+from strategies import Strategy
 from scipy.stats import binom
 
 
