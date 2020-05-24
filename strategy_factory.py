@@ -1,4 +1,4 @@
-from compare_all_moves_strategy import CompareAllMoves
+from compare_all_moves_strategy import CompareAllMovesSimple
 from strategies import MoveFurthestBackStrategy, HumanStrategy, MoveRandomPiece
 
 
@@ -16,7 +16,7 @@ class StrategyFactory:
         strategies = [
             MoveRandomPiece,
             MoveFurthestBackStrategy,
-            CompareAllMoves,
+            CompareAllMovesSimple,
             HumanStrategy,
         ]
         return strategies
