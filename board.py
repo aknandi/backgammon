@@ -46,6 +46,22 @@ class Board:
             return True
         return self.pieces_at(new_location)[0].colour == piece.colour
 
+    def no_moves_possible(self, colour, dice_roll):
+        piece_locations = [x.location for x in self.get_pieces(colour)]
+        piece_locations = list(set(piece_locations))
+
+        dice_roll = list(set(dice_roll))
+
+        pieces = []
+        for piece_location in piece_locations:
+            pieces.append(self.get_piece_at(piece_location))
+        for die in dice_roll:
+            for piece in pieces:
+                if self.is_move_possible(piece, die):
+                    return False
+
+        return True
+
     def can_move_off(self, colour):
         return all(x.spaces_to_home() <= 6 for x in self.get_pieces(colour))
 

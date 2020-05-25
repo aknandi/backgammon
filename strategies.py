@@ -1,3 +1,4 @@
+import time
 from random import shuffle
 from piece import Piece
 
@@ -48,6 +49,10 @@ class HumanStrategy(Strategy):
         print("It is %s's turn, you are %s, your roll is %s" % (self.__name, colour, dice_roll))
         while len(dice_roll) > 0 and not board.has_game_ended():
             board.print_board()
+            if board.no_moves_possible(colour, dice_roll):
+                print("There are no valid moves. Your turn has ended.")
+                time.sleep(3)
+                break
             print("You have %s left" % dice_roll)
             location = self.get_location(board, colour)
             piece = board.get_piece_at(location)
