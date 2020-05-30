@@ -1,5 +1,5 @@
-from strategies import Strategy
-from piece import Piece
+from src.strategies import Strategy
+from src.piece import Piece
 
 
 class CompareAllMoves(Strategy):

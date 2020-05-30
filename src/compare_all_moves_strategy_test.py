@@ -1,8 +1,8 @@
 import unittest
 
-from colour import Colour
-from compare_all_moves_strategy import CompareAllMovesSimple
-from test_board_base import TestBoardBase, Contains
+from src.colour import Colour
+from src.compare_all_moves_strategy import CompareAllMovesSimple
+from src.test_board_base import TestBoardBase, Contains
 
 
 class TestCompareAllMovesStrategy(TestBoardBase):

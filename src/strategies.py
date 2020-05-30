@@ -1,6 +1,6 @@
 import time
 from random import shuffle
-from piece import Piece
+from src.piece import Piece
 
 
 class Strategy:

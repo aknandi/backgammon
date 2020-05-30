@@ -2,9 +2,9 @@ import multiprocessing as mp
 import time
 from random import randint
 
-from colour import Colour
-from game import Game
-from strategies import Strategy
+from src.colour import Colour
+from src.game import Game
+from src.strategies import Strategy
 from scipy.stats import binom
 
 

@@ -1,7 +1,6 @@
 # Play backgammon
-from compare_all_moves_strategy import CompareAllMoves
-from experiment import Experiment
-from strategies import MoveFurthestBackStrategy
+from src.compare_all_moves_strategy import CompareAllMovesWeightingDistance, CompareAllMovesWeightingDistanceAndSingles
+from src.experiment import Experiment
 
 experiment = Experiment(
     games_to_play=100,

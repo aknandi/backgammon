@@ -1,9 +1,9 @@
 from random import randint
 
-from colour import Colour
-from game import Game
-from strategy_factory import StrategyFactory
-from strategies import HumanStrategy
+from src.colour import Colour
+from src.game import Game
+from src.strategy_factory import StrategyFactory
+from src.strategies import HumanStrategy
 
 if __name__ == '__main__':
     name = input('What is your name?\n')

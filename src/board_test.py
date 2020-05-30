@@ -1,7 +1,7 @@
 import unittest
 
-from colour import Colour
-from test_board_base import TestBoardBase, Contains, Die, Can, Cannot
+from src.colour import Colour
+from src.test_board_base import TestBoardBase, Contains, Die, Can, Cannot
 
 
 class TestBoardIsMovePossible(TestBoardBase):

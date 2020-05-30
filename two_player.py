@@ -1,8 +1,8 @@
 from random import randint
 
-from colour import Colour
-from game import Game
-from strategies import HumanStrategy
+from src.colour import Colour
+from src.game import Game
+from src.strategies import HumanStrategy
 
 
 if __name__ == '__main__':

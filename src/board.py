@@ -2,8 +2,8 @@ from random import shuffle
 import copy
 import json
 
-from colour import Colour
-from piece import Piece
+from src.colour import Colour
+from src.piece import Piece
 
 
 class Board:

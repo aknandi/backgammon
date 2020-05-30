@@ -1,9 +1,9 @@
 import json
 from random import randint
 
-from board import Board
-from colour import Colour
-from strategies import Strategy
+from src.board import Board
+from src.colour import Colour
+from src.strategies import Strategy
 
 
 class ReadOnlyBoard:

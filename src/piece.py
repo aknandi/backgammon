@@ -1,4 +1,4 @@
-from colour import Colour
+from src.colour import Colour
 
 
 class Piece:

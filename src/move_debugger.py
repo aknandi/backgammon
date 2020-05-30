@@ -1,8 +1,8 @@
 import json
 
-from board import Board
-from colour import Colour
-from strategy_factory import StrategyFactory
+from src.board import Board
+from src.colour import Colour
+from src.strategy_factory import StrategyFactory
 
 if __name__ == '__main__':
     s = input('Paste move info:\n')
