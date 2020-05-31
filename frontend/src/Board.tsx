@@ -11,17 +11,20 @@ export class BoardComponent extends React.Component<{}, State> {
     constructor(props: any) {
         super(props);
         this.state = {
-            piecesByLocation: JSON.parse(
-                `{"1": {"colour": "white", "count": 2}, 
-            "6": {"colour": "black", "count": 5}, 
-            "8": {"colour": "black", "count": 3}, 
-            "12": {"colour": "white", "count": 5}, 
-            "13": {"colour": "black", "count": 5}, 
-            "17": {"colour": "white", "count": 3}, 
-            "19": {"colour": "white", "count": 5}, 
-            "24": {"colour": "black", "count": 2}}
-        `),
+            piecesByLocation: {},
         }
+    }
+
+    componentDidMount() {
+        fetch("http://localhost:5000/start-game")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        piecesByLocation: result
+                    });
+                },
+            )
     }
 
     private locationToPosition(location: number, i: number): [number, number] {
@@ -57,7 +60,12 @@ export class BoardComponent extends React.Component<{}, State> {
             let colourAtLocation = this.state.piecesByLocation[+location].colour
             for (let i = 0; i < this.state.piecesByLocation[+location].count; i++) {
                 let position = this.locationToPosition(+location, i)
-                pieces.push(<PieceComponent colour={colourAtLocation} xposition={position[0]} yposition={position[1]}></PieceComponent>)
+                pieces.push(<PieceComponent 
+                    colour={colourAtLocation} 
+                    xposition={position[0]} 
+                    yposition={position[1]}
+                    key={`${location}-${i}`}
+                ></PieceComponent>)
             }
         }
         return pieces

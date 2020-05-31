@@ -24,7 +24,7 @@ export class PieceComponent extends React.Component<Props, {}> {
   render() {
     return (
       <div className='piece' style={this.setStyle()}>
-        <img src={this.props.colour == Colour.White ? whitePiece : blackPiece} alt="white-piece" />
+        <img src={this.props.colour === Colour.White ? whitePiece : blackPiece} alt="white-piece" />
       </div>
     )
   }
