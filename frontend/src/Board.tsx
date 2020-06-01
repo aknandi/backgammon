@@ -5,7 +5,8 @@ import {LocationComponent} from './Location'
 
 
 type State = {
-    piecesByLocation: { [location: number]: { colour: Colour, count: number } }
+    piecesByLocation: { [location: number]: { colour: Colour, count: number } },
+    diceRoll: number[]
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -14,6 +15,7 @@ export class BoardComponent extends React.Component<{}, State> {
         super(props);
         this.state = {
             piecesByLocation: {},
+            diceRoll: [],
         }
     }
 
@@ -38,7 +40,8 @@ export class BoardComponent extends React.Component<{}, State> {
             .then(
                 (result) => {
                     this.setState({
-                        piecesByLocation: result
+                        piecesByLocation: JSON.parse(result.board),
+                        diceRoll: result.dice_roll
                     });
                 },
             )
@@ -123,7 +126,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderZones() {
         let zones = []
-        for (let location = 1; location <= 24; location++) {
+        for (let location = 0; location <= 25; location++) {
             let position = this.getZonePosition(location)
             zones.push(<LocationComponent
                 xposition={position[0]}
@@ -140,6 +143,7 @@ export class BoardComponent extends React.Component<{}, State> {
             <div className='board' id='board'>
                 {this.renderZones()}
                 {this.renderPieces()}
+                <div> {this.state.diceRoll} </div>
             </div>
         )
     }
