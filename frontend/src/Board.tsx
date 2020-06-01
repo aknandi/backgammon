@@ -29,7 +29,7 @@ export class BoardComponent extends React.Component<{}, State> {
             console.log('This move is not allowed')
         }
 
-    }
+    }   
 
     componentDidMount() {
         (window as any).movePiece = this.movePiece.bind(this);
@@ -100,8 +100,6 @@ export class BoardComponent extends React.Component<{}, State> {
         console.log(locationEnd)
         let dieRoll = Math.abs(locationEnd - locationStart)
         this.movePiece(locationStart, dieRoll)
-        // End position to location to move to 
-        // move piece with location and roll
     }
 
     private renderPieces() {

@@ -42,6 +42,10 @@ export class PieceComponent extends React.Component<Props, {}> {
           end: (event) => {
             let location = event.dropzone?.target?.id;
             this.props.onDrop(location);
+            // Remove the tranformation
+            event.target.style.transform = ''
+            event.target.setAttribute('data-x', null)
+            event.target.setAttribute('data-y', null)
           }
         }
       });
