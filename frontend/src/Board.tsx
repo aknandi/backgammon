@@ -23,9 +23,10 @@ export class BoardComponent extends React.Component<{}, State> {
     private async movePiece(location: number, dieRoll: number) {
         try {
             const response = await fetch(`http://localhost:5000/move-piece?location=${location}&die-roll=${dieRoll}`)
-            const json = await response.json()
+            const result = await response.json()
             this.setState({
-                piecesByLocation: json
+                piecesByLocation: JSON.parse(result.board),
+                diceRoll: result.dice_roll
             })
         }
         catch {

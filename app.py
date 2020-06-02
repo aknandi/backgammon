@@ -69,7 +69,9 @@ def move_piece():
         'die_roll': die_roll
     })
     move_results.get()
-    return current_board[0].to_json()
+    time.sleep(0.2)
+    return {'board': current_board[0].to_json(),
+            'dice_roll': current_move[0]}
 
 
 @app.route('/new-game')
