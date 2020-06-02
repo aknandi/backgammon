@@ -136,11 +136,11 @@ export class BoardComponent extends React.Component<{}, State> {
         return [xpos, ypos]
     }
 
-    private handlePieceDrop(locationStart: number, locationEnd: number) {
+    private async handlePieceDrop(locationStart: number, locationEnd: number) {
         console.log(locationStart)
         console.log(locationEnd)
         let dieRoll = Math.abs(locationEnd - locationStart)
-        this.movePiece(locationStart, dieRoll)
+        await this.movePiece(locationStart, dieRoll)
     }
 
     private renderPieces() {
@@ -155,7 +155,9 @@ export class BoardComponent extends React.Component<{}, State> {
                     xposition={position[0]}
                     yposition={position[1]}
                     key={`${location}-${i}`}
-                    onDrop={newLocation => { this.handlePieceDrop(+location, newLocation) }}
+                    onDrop={async newLocation => {
+                        await this.handlePieceDrop(+location, newLocation)
+                    }}
                 ></PieceComponent>)
             }
         }

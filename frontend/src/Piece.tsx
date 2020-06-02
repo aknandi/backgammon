@@ -10,7 +10,7 @@ type Props = {
   colour: Colour,
   xposition: number,
   yposition: number,
-  onDrop: (location: number) => void,
+  onDrop: (location: number) => Promise<void>,
 }
 
 export enum Colour {
@@ -39,9 +39,9 @@ export class PieceComponent extends React.Component<Props, {}> {
         autoScroll: true,
         listeners: {
           move: dragMoveListener,
-          end: (event) => {
+          end: async (event) => {
             let location = event.dropzone?.target?.id;
-            this.props.onDrop(location);
+          await this.props.onDrop(location);
             // Remove the tranformation
             event.target.style.transform = ''
             event.target.setAttribute('data-x', null)
