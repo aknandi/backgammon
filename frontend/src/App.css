@@ -6,7 +6,7 @@
 
 .board {
     background-image: url('backgammon-board.gif');
-    width: 100%;
+    width: 90%;
     height: 0;
     padding-top: 66.64%;
     background-size: contain;
