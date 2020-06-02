@@ -87,10 +87,15 @@ export class BoardComponent extends React.Component<{}, State> {
             ypos = y0_top + y_sep * i
         }
 
-        // Adjust the taken locations a bit
-        if (location === 0 || location === 25) {
-            xpos += 3
+        // Taken location is the centre of the board
+        if (location === 0 ) {
+            xpos = 46.5
+            ypos = 40 - y_sep * i
+        } else if (location === 25) {
+            xpos = 46.5
+            ypos = 50 + y_sep * i
         }
+
         return [xpos, ypos]
         // Need to convert python positions 0 to 25 to css x and y positions
     }
@@ -123,7 +128,7 @@ export class BoardComponent extends React.Component<{}, State> {
             ypos = y_top
         }
 
-        // Adjust the taken locations a bit
+        // These are when the home pieces will go
         if (location === 0 || location === 25) {
             xpos += 3
         }
