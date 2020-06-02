@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Colour, PieceComponent } from './Piece'
-import {LocationComponent} from './Location'
+import { LocationComponent } from './Location'
 
 
 type State = {
@@ -57,7 +57,7 @@ export class BoardComponent extends React.Component<{}, State> {
         let y0_top = 6.2
 
         let x_sep = 7.4
-        let y_sep = 8.0 
+        let y_sep = 8.0
         if (location < 7) { // bottom right
             index = 7 - location
             xpos = x0_right + x_sep * (index - 1)
@@ -75,6 +75,11 @@ export class BoardComponent extends React.Component<{}, State> {
             xpos = x0_right + x_sep * (index - 1)
             ypos = y0_top + y_sep * i
         }
+
+        // Adjust the taken locations a bit
+        if (location === 0 || location === 25) {
+            xpos += 3
+        }
         return [xpos, ypos]
         // Need to convert python positions 0 to 25 to css x and y positions
     }
@@ -82,7 +87,7 @@ export class BoardComponent extends React.Component<{}, State> {
     private getZonePosition(location: number): [number, number] {
 
         let index, xpos, ypos
-        
+
         let x0_right = 52.5
         let x0_left = 3.0
         let y_bottom = 50
@@ -95,7 +100,7 @@ export class BoardComponent extends React.Component<{}, State> {
             ypos = y_bottom
         } else if (location < 13) { // bottom left
             index = 13 - location
-            xpos = x0_left+ x_sep * (index - 1)
+            xpos = x0_left + x_sep * (index - 1)
             ypos = y_bottom
         } else if (location < 19) { // top left
             index = location - 12
@@ -109,7 +114,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
         // Adjust the taken locations a bit
         if (location === 0 || location === 25) {
-            xpos += 3 
+            xpos += 3
         }
         // Positions of the top left of the zone
         return [xpos, ypos]
