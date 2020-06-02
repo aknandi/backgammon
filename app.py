@@ -24,7 +24,7 @@ def game_thread():
     class ApiStrategy(Strategy):
         def move(self, board, colour, dice_roll, make_move):
             current_move.insert(0, dice_roll)
-            while len(dice_roll) > 0:
+            while len(dice_roll) > 0 and not board.no_moves_possible(colour, dice_roll):
                 move = moves_to_make.get()
                 if move == 'end_game':
                     raise Exception()
