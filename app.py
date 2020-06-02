@@ -1,5 +1,6 @@
 import queue
 import threading
+import time
 
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
@@ -24,8 +25,10 @@ def game_thread():
         def move(self, board, colour, dice_roll, make_move):
             current_move.insert(0, dice_roll)
             while len(dice_roll) > 0:
+                move = moves_to_make.get()
+                if move == 'end_game':
+                    raise Exception()
                 try:
-                    move = moves_to_make.get()
                     make_move(move['location'], move['die_roll'])
                     dice_roll.remove(move['die_roll'])
                     move_results.put("done")
@@ -67,3 +70,17 @@ def move_piece():
     })
     move_results.get()
     return current_board[0].to_json()
+
+
+@app.route('/new-game')
+@cross_origin()
+def new_game():
+    moves_to_make.put('end_game')
+    current_board.clear()
+    current_move.clear()
+    threading.Thread(target=game_thread).start()
+    time.sleep(0.1)
+    return {'board': current_board[0].to_json(),
+            'dice_roll': current_move[0]}
+
+

@@ -17,6 +17,7 @@ export class BoardComponent extends React.Component<{}, State> {
             piecesByLocation: {},
             diceRoll: [],
         }
+        this.handleClick = this.handleClick.bind(this)
     }
 
     private async movePiece(location: number, dieRoll: number) {
@@ -31,7 +32,16 @@ export class BoardComponent extends React.Component<{}, State> {
             console.log('This move is not allowed')
         }
 
-    }   
+    }
+
+    private async handleClick() {
+        const response = await fetch("http://localhost:5000/new-game")
+        const result = await response.json()
+        this.setState({
+            piecesByLocation: JSON.parse(result.board),
+            diceRoll: result.dice_roll
+        })
+    }
 
     componentDidMount() {
         (window as any).movePiece = this.movePiece.bind(this);
@@ -166,6 +176,7 @@ export class BoardComponent extends React.Component<{}, State> {
                 {this.renderZones()}
                 {this.renderPieces()}
                 <div> {this.state.diceRoll} </div>
+                <button onClick={this.handleClick}> New Game </button>
             </div>
         )
     }
