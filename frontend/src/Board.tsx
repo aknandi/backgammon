@@ -138,6 +138,9 @@ export class BoardComponent extends React.Component<{}, State> {
         console.log(locationStart)
         console.log(locationEnd)
         let dieRoll = Math.abs(locationEnd - locationStart)
+        if (locationEnd === 25 && !this.state.diceRoll.includes(dieRoll) && dieRoll < Math.max(...this.state.diceRoll)) {
+            dieRoll = Math.min(...this.state.diceRoll.filter(x => x > dieRoll))
+        }
         await this.movePiece(locationStart, dieRoll)
     }
 
@@ -193,7 +196,7 @@ export class BoardComponent extends React.Component<{}, State> {
     private getPieceCount(colour : Colour) : number {
         let numberOfPieces = 0
         for (let location of Object.keys(this.state.piecesByLocation)) {
-            if (this.state.piecesByLocation[+location].colour == colour) {
+            if (this.state.piecesByLocation[+location].colour === colour) {
                 numberOfPieces += this.state.piecesByLocation[+location].count
             }
         }

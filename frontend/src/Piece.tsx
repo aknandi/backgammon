@@ -41,7 +41,7 @@ export class PieceComponent extends React.Component<Props, {}> {
           move: dragMoveListener,
           end: async (event) => {
             let location = event.dropzone?.target?.id;
-          await this.props.onDrop(location);
+          await this.props.onDrop(+location);
             // Remove the tranformation
             event.target.style.transform = ''
             event.target.setAttribute('data-x', null)
