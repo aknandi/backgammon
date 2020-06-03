@@ -1,0 +1,9 @@
+.die {
+    position: absolute;
+    width: 5.5%;
+}
+
+.die img {
+    width: 100%;
+    margin: 0;
+}

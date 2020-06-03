@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Colour, PieceComponent } from './Piece'
 import { LocationComponent } from './Location'
+import { DieComponent } from './Die'
 
 
 type State = {
@@ -178,12 +179,26 @@ export class BoardComponent extends React.Component<{}, State> {
         return zones
     }
 
+    private renderDice() {
+        let dice = []
+        for (let i = 0; i < this.state.diceRoll.length; i++) {
+            let position = [4 + 8*(i + 1), 45]
+            dice.push(<DieComponent
+                xposition={position[0]}
+                yposition={position[1]}
+                roll={this.state.diceRoll[i]}
+                key={`dice-${i}`}
+            ></DieComponent>)
+        }
+        return dice
+    }
+
     render() {
         return (
             <div className='board' id='board'>
                 {this.renderZones()}
                 {this.renderPieces()}
-                <div> {this.state.diceRoll} </div>
+                {this.renderDice()}
                 <button onClick={this.handleClick}> New Game </button>
             </div>
         )
