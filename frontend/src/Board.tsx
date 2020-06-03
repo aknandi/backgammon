@@ -3,6 +3,7 @@ import './App.css';
 import { Colour, PieceComponent } from './Piece'
 import { LocationComponent } from './Location'
 import { DieComponent } from './Die'
+import { EndZoneComponent } from './EndZone'
 
 
 type State = {
@@ -129,10 +130,6 @@ export class BoardComponent extends React.Component<{}, State> {
             ypos = y_top
         }
 
-        // These are when the home pieces will go
-        if (location === 0 || location === 25) {
-            xpos += 3
-        }
         // Positions of the top left of the zone
         return [xpos, ypos]
     }
@@ -167,7 +164,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderZones() {
         let zones = []
-        for (let location = 0; location <= 25; location++) {
+        for (let location = 1; location <= 24; location++) {
             let position = this.getZonePosition(location)
             zones.push(<LocationComponent
                 xposition={position[0]}
@@ -193,12 +190,34 @@ export class BoardComponent extends React.Component<{}, State> {
         return dice
     }
 
+    private getPieceCount(colour : Colour) : number {
+        let numberOfPieces = 0
+        for (let location of Object.keys(this.state.piecesByLocation)) {
+            if (this.state.piecesByLocation[+location].colour == colour) {
+                numberOfPieces += this.state.piecesByLocation[+location].count
+            }
+        }
+        return numberOfPieces
+    }
+
     render() {
         return (
             <div className='board' id='board'>
                 {this.renderZones()}
                 {this.renderPieces()}
                 {this.renderDice()}
+                <EndZoneComponent
+                    colour={Colour.White}
+                    xposition={99.9}
+                    yposition={6.2}
+                    piecesCount={15 - this.getPieceCount(Colour.White)}
+                    />
+                <EndZoneComponent
+                    colour={Colour.Black}
+                    xposition={99.9}
+                    yposition={50}
+                    piecesCount={15 - this.getPieceCount(Colour.Black)}
+                    />
                 <button onClick={this.handleClick}> New Game </button>
             </div>
         )
