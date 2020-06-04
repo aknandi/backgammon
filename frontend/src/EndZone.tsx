@@ -31,7 +31,7 @@ export class EndZoneComponent extends React.Component<Props, {}> {
     private renderPieces() : JSX.Element[] {
         let pieces = []
         for (let i = 0; i<this.props.piecesCount; i++) {
-            pieces.push(<div className='end-piece' style={{backgroundColor: this.props.colour}}/>)
+            pieces.push(<div className='end-piece' key={i} style={{backgroundColor: this.props.colour}}/>)
         }
         return pieces
     }
