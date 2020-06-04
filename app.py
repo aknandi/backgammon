@@ -5,7 +5,7 @@ import time
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 from src.colour import Colour
-from src.compare_all_moves_strategy import CompareAllMovesSimple
+from src.compare_all_moves_strategy import CompareAllMovesWeightingDistanceAndSingles
 from src.game import Game
 from random import randint
 from src.strategies import Strategy
@@ -37,7 +37,7 @@ def game_thread():
 
     game = Game(
         white_strategy=ApiStrategy(),
-        black_strategy=CompareAllMovesSimple(),
+        black_strategy=CompareAllMovesWeightingDistanceAndSingles(),
         first_player=Colour(randint(0, 1))
     )
     current_board.append(game.board)
