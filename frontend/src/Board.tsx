@@ -13,6 +13,7 @@ type State = {
 
 export class BoardComponent extends React.Component<{}, State> {
 
+    private readonly backendurl = 'http://localhost:5000'
     constructor(props: any) {
         super(props);
         this.state = {
@@ -24,7 +25,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private async movePiece(location: number, dieRoll: number) {
         try {
-            const response = await fetch(`http://localhost:5000/move-piece?location=${location}&die-roll=${dieRoll}`)
+            const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}`)
             const result = await response.json()
             this.setState({
                 piecesByLocation: JSON.parse(result.board),
@@ -38,7 +39,7 @@ export class BoardComponent extends React.Component<{}, State> {
     }
 
     private async handleClick() {
-        const response = await fetch("http://localhost:5000/new-game")
+        const response = await fetch(`${this.backendurl}/new-game`)
         const result = await response.json()
         this.setState({
             piecesByLocation: JSON.parse(result.board),
@@ -48,7 +49,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
     componentDidMount() {
         (window as any).movePiece = this.movePiece.bind(this);
-        fetch("http://localhost:5000/start-game")
+        fetch(`${this.backendurl}/start-game`)
             .then(res => res.json())
             .then(
                 (result) => {
