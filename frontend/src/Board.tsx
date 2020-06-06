@@ -39,6 +39,9 @@ export class BoardComponent extends React.Component<{}, State> {
     }
 
     private async handleClick() {
+        if (!window.confirm("Are you sure you want to start a new game?")) {
+            return
+        } 
         const response = await fetch(`${this.backendurl}/new-game`)
         const result = await response.json()
         this.setState({
