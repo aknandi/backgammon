@@ -29,8 +29,9 @@ def game_thread():
                 if move == 'end_game':
                     raise Exception()
                 try:
-                    make_move(move['location'], move['die_roll'])
-                    dice_roll.remove(move['die_roll'])
+                    rolls_moved = make_move(move['location'], move['die_roll'])
+                    for roll in rolls_moved:
+                        dice_roll.remove(roll)
                     move_results.put("done")
                 except:
                     move_results.put("fail")
