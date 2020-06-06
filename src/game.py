@@ -95,6 +95,8 @@ class Game:
                 break
 
     def get_rolls_to_move(self, location, requested_move, available_rolls):
+        # This first check ensures we return doing as little work as possible when the requested
+        # move is exactly one of the die rolls (to ensure automated experiments don't run slower)
         if available_rolls.__contains__(requested_move):
             if self.board.is_move_possible(self.board.get_piece_at(location), requested_move):
                 return [requested_move]
@@ -106,13 +108,16 @@ class Game:
         rolls_to_move = []
         current_location = location
         if not board.is_move_possible(board.get_piece_at(current_location), available_rolls[0]):
+            # If the first die roll isn't possible, reverse the dice before starting. This ensures
+            # we cover all possible orderings (becasue doubles will always all be the same number)
             available_rolls = available_rolls.copy()
             available_rolls.reverse()
 
         for roll in available_rolls:
-            if not board.is_move_possible(board.get_piece_at(current_location), roll):
+            piece = board.get_piece_at(current_location)
+            if not board.is_move_possible(piece, roll):
                 break
-            current_location = board.move_piece(board.get_piece_at(current_location), roll)
+            current_location = board.move_piece(piece, roll)
             rolls_to_move.append(roll)
             if sum(rolls_to_move) == requested_move:
                 return rolls_to_move
