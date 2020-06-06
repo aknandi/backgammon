@@ -41,6 +41,9 @@ export class PieceComponent extends React.Component<Props, {}> {
         ],
         autoScroll: true,
         listeners: {
+          start: (event) => {
+            event.target.style.zIndex = 1
+          },
           move: dragMoveListener,
           end: async (event) => {
             let location = event.dropzone?.target?.id;
@@ -49,6 +52,7 @@ export class PieceComponent extends React.Component<Props, {}> {
             event.target.style.transform = ''
             event.target.setAttribute('data-x', null)
             event.target.setAttribute('data-y', null)
+            event.target.style.zIndex = 0
           }
         }
       });
