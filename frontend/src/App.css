@@ -1,3 +1,7 @@
+body {
+  background-color: #116314;
+}
+
 .App {
   text-align: center;
   background-color: #116314;
@@ -6,13 +10,23 @@
 
 .board {
     background-image: url('backgammon-board.gif');
-    width: 90%;
-    height: 0;
-    padding-top: 66.64%;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center;
-    position: relative;
+    background-position: left;
+    position: absolute;
+    margin: auto;
+    width: 98vw; /* 2000 × 1374 */
+    height: 61.21vw; /* 98/61.21 = 1.601 */
+    max-height: 100vh;
+    max-width: 160.1vh; /* (2000 + 200)/1374 = 1.601 */
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0;
 }
 
+.newgamebutton {
+  top: 0%;
+  left: 91.3%;
+  position: absolute;
+  font-size: calc(1vw);
+}
 

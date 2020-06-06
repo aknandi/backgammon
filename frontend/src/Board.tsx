@@ -13,7 +13,7 @@ type State = {
 
 export class BoardComponent extends React.Component<{}, State> {
 
-    private readonly backendurl = 'http://localhost:5000'
+    private readonly backendurl = 'http://d7ff57367cbe.ngrok.io'
     constructor(props: any) {
         super(props);
         this.state = {
@@ -68,13 +68,13 @@ export class BoardComponent extends React.Component<{}, State> {
 
         let index, xpos, ypos
 
-        let x0_right = 52.5
-        let x0_left = 3.0
-        let y0_bottom = 84.5
-        let y0_top = 6.2
+        let x0_right = 47.5
+        let x0_left = 2.45
+        let y0_bottom = 87.0
+        let y0_top = 2.8
 
-        let x_sep = 7.4
-        let y_sep = 8.0
+        let x_sep = 6.8
+        let y_sep = 8.8
         if (location < 7) { // bottom right
             index = 7 - location
             xpos = x0_right + x_sep * (index - 1)
@@ -95,10 +95,10 @@ export class BoardComponent extends React.Component<{}, State> {
 
         // Taken location is the centre of the board
         if (location === 0 ) {
-            xpos = 46.5
+            xpos = 42.0
             ypos = 40 - y_sep * i
         } else if (location === 25) {
-            xpos = 46.5
+            xpos = 42.0
             ypos = 50 + y_sep * i
         }
 
@@ -110,28 +110,28 @@ export class BoardComponent extends React.Component<{}, State> {
 
         let index, xpos, ypos
 
-        let x0_right = 52.5
-        let x0_left = 3.0
-        let y_bottom = 50
-        let y_top = 6.2
+        let x0_right = 47;
+        let x0_left = 2.2;
+        let y_bottom = 49.9;
+        let y_top = 3.5;
 
-        let x_sep = 7.4
+        let x_sep = 6.9;
         if (location < 7) { // bottom right
-            index = 7 - location
-            xpos = x0_right + x_sep * (index - 1)
-            ypos = y_bottom
+            index = 7 - location;
+            xpos = x0_right + x_sep * (index - 1);
+            ypos = y_bottom;
         } else if (location < 13) { // bottom left
-            index = 13 - location
-            xpos = x0_left + x_sep * (index - 1)
-            ypos = y_bottom
+            index = 13 - location;
+            xpos = x0_left + x_sep * (index - 1);
+            ypos = y_bottom;
         } else if (location < 19) { // top left
-            index = location - 12
-            xpos = x0_left + x_sep * (index - 1)
-            ypos = y_top
+            index = location - 12;
+            xpos = x0_left + x_sep * (index - 1);
+            ypos = y_top;
         } else { // top right
-            index = location - 18
-            xpos = x0_right + x_sep * (index - 1)
-            ypos = y_top
+            index = location - 18;
+            xpos = x0_right + x_sep * (index - 1);
+            ypos = y_top;
         }
 
         // Positions of the top left of the zone
@@ -186,7 +186,7 @@ export class BoardComponent extends React.Component<{}, State> {
     private renderDice() {
         let dice = []
         for (let i = 0; i < this.state.diceRoll.length; i++) {
-            let position = [4 + 8*(i + 1), 45]
+            let position = [1 + 8*(i + 1), 46]
             dice.push(<DieComponent
                 xposition={position[0]}
                 yposition={position[1]}
@@ -215,17 +215,17 @@ export class BoardComponent extends React.Component<{}, State> {
                 {this.renderDice()}
                 <EndZoneComponent
                     colour={Colour.White}
-                    xposition={100.5}
-                    yposition={6.6}
+                    xposition={92}
+                    yposition={3.5}
                     piecesCount={15 - this.getPieceCount(Colour.White)}
                     />
                 <EndZoneComponent
                     colour={Colour.Black}
-                    xposition={100.5}
-                    yposition={57.8}
+                    xposition={92}
+                    yposition={52.8}
                     piecesCount={15 - this.getPieceCount(Colour.Black)}
                     />
-                <button onClick={this.handleClick}> New Game </button>
+                <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
             </div>
         )
     }

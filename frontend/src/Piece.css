@@ -1,7 +1,7 @@
 
 .piece {
     position: absolute;
-    width: 7%;
+    width: 6.5%;
     touch-action: none;
     user-select: none;
 }
