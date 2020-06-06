@@ -1,0 +1,2 @@
+class MoveNotPossibleException(Exception):
+    pass
