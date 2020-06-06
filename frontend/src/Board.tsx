@@ -213,13 +213,13 @@ export class BoardComponent extends React.Component<{}, State> {
                 <EndZoneComponent
                     colour={Colour.White}
                     xposition={99.9}
-                    yposition={6.2}
+                    yposition={6.6}
                     piecesCount={15 - this.getPieceCount(Colour.White)}
                     />
                 <EndZoneComponent
                     colour={Colour.Black}
                     xposition={99.9}
-                    yposition={50}
+                    yposition={56.6}
                     piecesCount={15 - this.getPieceCount(Colour.Black)}
                     />
                 <button onClick={this.handleClick}> New Game </button>

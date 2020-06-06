@@ -27,7 +27,7 @@ export class PieceComponent extends React.Component<Props, {}> {
   }
 
   componentDidMount() {
-    if (this.props.colour == Colour.Black) {
+    if (this.props.colour === Colour.Black) {
       return
     }
     interact(this.domElement.current!)

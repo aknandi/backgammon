@@ -47,7 +47,8 @@ export class EndZoneComponent extends React.Component<Props, {}> {
     private setStyle(): React.CSSProperties {
         return {
             left: `${this.props.xposition}%`,
-            top: `${this.props.yposition}%`
+            top: `${this.props.yposition}%`,
+            border: `2px solid ${this.props.colour}`
         };
     }
 }
