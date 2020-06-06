@@ -64,7 +64,7 @@ export class BoardComponent extends React.Component<{}, State> {
             )
     }
 
-    private locationToPosition(location: number, i: number): [number, number] {
+    private locationToPosition(location: number, i: number, count: number): [number, number] {
 
         let index, xpos, ypos
 
@@ -75,6 +75,12 @@ export class BoardComponent extends React.Component<{}, State> {
 
         let x_sep = 6.8
         let y_sep = 8.8
+        let max_height = y_sep * 5 - 6.5
+
+        // If the height goes that of 5 pieces start overlapping pieces such that they're always the same height
+        if (count > 5) {
+            y_sep = max_height/count
+        }
         if (location < 7) { // bottom right
             index = 7 - location
             xpos = x0_right + x_sep * (index - 1)
@@ -150,11 +156,11 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderPieces() {
         let pieces = []
-        //let locations = Object.keys(this.state.piecesByLocation)
-        for (let location of Object.keys(this.state.piecesByLocation)) {
-            let colourAtLocation = this.state.piecesByLocation[+location].colour
-            for (let i = 0; i < this.state.piecesByLocation[+location].count; i++) {
-                let position = this.locationToPosition(+location, i)
+        let locations = this.state.piecesByLocation
+        for (let location of Object.keys(locations)) {
+            let colourAtLocation = locations[+location].colour
+            for (let i = 0; i < locations[+location].count; i++) {
+                let position = this.locationToPosition(+location, i, locations[+location].count)
                 pieces.push(<PieceComponent
                     colour={colourAtLocation}
                     xposition={position[0]}
