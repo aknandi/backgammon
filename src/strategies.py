@@ -1,6 +1,7 @@
 import time
 from random import shuffle
 from src.piece import Piece
+from src.move_not_possible_exception import MoveNotPossibleException
 
 
 class Strategy:
@@ -60,17 +61,18 @@ class HumanStrategy(Strategy):
                 try:
                     value = int(input("How far (or 0 to move another piece)?\n"))
                     if value == 0:
-                        break
-                    if value not in dice_roll or not board.is_move_possible(piece, value):
-                        print("You can't make that move!")
-                    else:
-                        dice_roll.remove(value)
-                        make_move(piece.location, value)
-                        print("")
-                        print("")
-                        break
+                        break                    
+                    rolls_moved = make_move(piece.location, value)
+                    for roll in rolls_moved:
+                        dice_roll.remove(roll)
+                    print("")
+                    print("")
+                    break
                 except ValueError:
                     print("That's not a number! Try again")
+                except MoveNotPossibleException as e:
+                    print(str(e))
+
         print("Done!")
 
     def get_location(self, board, colour):

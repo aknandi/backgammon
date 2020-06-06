@@ -4,6 +4,7 @@ from random import randint
 from src.board import Board
 from src.colour import Colour
 from src.strategies import Strategy
+from src.move_not_possible_exception import MoveNotPossibleException
 
 
 class ReadOnlyBoard:
@@ -52,11 +53,14 @@ class Game:
                 print("%s rolled %s" % (colour, dice_roll))
 
             def handle_move(location, die_roll):
-                if not dice_roll.__contains__(die_roll):
-                    raise Exception("%d is not a roll that's allowed" % die_roll)
-                piece = self.board.get_piece_at(location)
-                self.board.move_piece(piece, die_roll)
-                dice_roll.remove(die_roll)
+                rolls_to_move = self.get_rolls_to_move(location, die_roll, dice_roll)
+                if rolls_to_move is None:
+                    raise MoveNotPossibleException("You cannot move that piece %d" % die_roll)
+                for roll in rolls_to_move:
+                    piece = self.board.get_piece_at(location)
+                    location = self.board.move_piece(piece, roll)
+                    dice_roll.remove(roll)
+                return rolls_to_move
 
             board_snapshot = self.board.to_json()
             dice_roll_snapshot = dice_roll.copy()
@@ -90,13 +94,29 @@ class Game:
                     print('%s has won!' % self.board.who_won())
                 break
 
-    def make_move(self, dice_roll, colour):
-        for die_roll in dice_roll:
-            valid_pieces = self.board.get_pieces(colour)
-            for piece in valid_pieces:
-                if self.board.is_move_possible(piece, die_roll):
-                    self.board.move_piece(piece, die_roll)
-                    break
+    def get_rolls_to_move(self, location, requested_move, available_rolls):
+        if available_rolls.__contains__(requested_move):
+            if self.board.is_move_possible(self.board.get_piece_at(location), requested_move):
+                return [requested_move]
+            return None
+        if len(available_rolls) == 1:
+            return None
+        
+        board = self.board.create_copy()
+        rolls_to_move = []
+        current_location = location
+        if not board.is_move_possible(board.get_piece_at(current_location), available_rolls[0]):
+            available_rolls = available_rolls.copy()
+            available_rolls.reverse()
+
+        for roll in available_rolls:
+            if not board.is_move_possible(board.get_piece_at(current_location), roll):
+                break
+            current_location = board.move_piece(board.get_piece_at(current_location), roll)
+            rolls_to_move.append(roll)
+            if sum(rolls_to_move) == requested_move:
+                return rolls_to_move
+        return None
 
     def who_started(self):
         return self.first_player

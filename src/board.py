@@ -84,6 +84,7 @@ class Board:
             piece_to_take.location = self.__taken_location(piece_to_take.colour)
 
         piece.location = new_location
+        return new_location
 
     def pieces_at(self, location):
         return [x for x in self.__pieces if x.location == location]
