@@ -30,3 +30,11 @@ body {
   font-size: calc(1vw);
 }
 
+.winner {
+  top: 44.5%;
+  left: 55%;
+  font-size: calc(5vw);
+  color: yellow;
+  position: absolute;
+}
+

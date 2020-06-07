@@ -8,17 +8,19 @@ import { EndZoneComponent } from './EndZone'
 
 type State = {
     piecesByLocation: { [location: number]: { colour: Colour, count: number } },
-    diceRoll: number[]
+    diceRoll: number[],
+    winner: Colour | null,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
 
-    private readonly backendurl = 'http://d7ff57367cbe.ngrok.io'
+    private readonly backendurl = 'http://localhost:5000'
     constructor(props: any) {
         super(props);
         this.state = {
             piecesByLocation: {},
             diceRoll: [],
+            winner: null,
         }
         this.handleClick = this.handleClick.bind(this)
     }
@@ -29,7 +31,8 @@ export class BoardComponent extends React.Component<{}, State> {
             const result = await response.json()
             this.setState({
                 piecesByLocation: JSON.parse(result.board),
-                diceRoll: result.dice_roll
+                diceRoll: result.dice_roll,
+                winner: result.winner,
             })
         }
         catch {
@@ -46,7 +49,8 @@ export class BoardComponent extends React.Component<{}, State> {
         const result = await response.json()
         this.setState({
             piecesByLocation: JSON.parse(result.board),
-            diceRoll: result.dice_roll
+            diceRoll: result.dice_roll,
+            winner: result.winner,
         })
     }
 
@@ -58,7 +62,8 @@ export class BoardComponent extends React.Component<{}, State> {
                 (result) => {
                     this.setState({
                         piecesByLocation: JSON.parse(result.board),
-                        diceRoll: result.dice_roll
+                        diceRoll: result.dice_roll,
+                        winner: result.winner,
                     });
                 },
             )
@@ -213,6 +218,12 @@ export class BoardComponent extends React.Component<{}, State> {
         return numberOfPieces
     }
 
+    private renderWinner() {
+        if (this.state.winner) {
+            return <div className='winner'>{this.state.winner === Colour.White ? "You won :)": "You lost :("} </div>
+        }
+    }
+
     render() {
         return (
             <div className='board' id='board'>
@@ -231,6 +242,7 @@ export class BoardComponent extends React.Component<{}, State> {
                     yposition={52.8}
                     piecesCount={15 - this.getPieceCount(Colour.Black)}
                     />
+                {this.renderWinner()} 
                 <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
             </div>
         )

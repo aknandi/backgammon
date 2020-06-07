@@ -44,8 +44,23 @@ def game_thread():
     current_board.append(game.board)
     game.run_game()
 
+    # Thread is only ended by an 'end_game' move
+    while True:
+        if moves_to_make.get() == 'end_game':
+            break
+        else:
+            move_results.put("fail")
+
 
 threading.Thread(target=game_thread).start()
+
+
+def get_state(board, move):
+    state = {'board': board.to_json(),
+             'dice_roll': move}
+    if board.has_game_ended():
+        state['winner'] = str(board.who_won())
+    return state
 
 
 @app.route('/')
@@ -56,8 +71,7 @@ def hello_world():
 @app.route('/start-game')
 @cross_origin()
 def start_game():
-    return {'board': current_board[0].to_json(),
-            'dice_roll': current_move[0]}
+    return get_state(current_board[0], current_move[0])
 
 
 @app.route('/move-piece')
@@ -71,8 +85,7 @@ def move_piece():
     })
     move_results.get()
     time.sleep(0.2)
-    return {'board': current_board[0].to_json(),
-            'dice_roll': current_move[0]}
+    return get_state(current_board[0], current_move[0])
 
 
 @app.route('/new-game')
@@ -83,7 +96,6 @@ def new_game():
     current_move.clear()
     threading.Thread(target=game_thread).start()
     time.sleep(0.1)
-    return {'board': current_board[0].to_json(),
-            'dice_roll': current_move[0]}
+    return get_state(current_board[0], current_move[0])
 
 
