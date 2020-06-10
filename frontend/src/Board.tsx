@@ -30,34 +30,55 @@ export class BoardComponent extends React.Component<{}, State> {
         this.handleClick = this.handleClick.bind(this)
     }
 
+    private playDiceRollSound() {
+        var audio = new Audio(`${process.env.PUBLIC_URL}/dice-roll.mp3`);
+        audio.play();
+    }
+
+    private playPieceMoveSound() {
+        var audio = new Audio(`${process.env.PUBLIC_URL}/piece-move.mp3`);
+        audio.play();
+    }
+
     private async movePiece(location: number, dieRoll: number) {
         try {
             const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}`)
             const result = await response.json()
-            if(result.opp_move) {
+            if (result.opp_move) {
+                this.playPieceMoveSound();
                 this.setState({
                     piecesByLocation: JSON.parse(result.board_after_your_last_turn),
+                    diceRoll: [],
+                    usedRolls: [],
+                });
+                await sleep(750);
+                this.playDiceRollSound();
+                this.setState({
                     diceRoll: [0, 0],
                     usedRolls: [],
                 });
-                await sleep(1500);
+                await sleep(1000);
                 this.setState({
                     diceRoll: result.opp_roll,
                 });
                 await sleep(2000);
                 for(let i = 0; i < result.opp_move.length; i++) {
                     let move = result.opp_move[i];
+                    this.playPieceMoveSound();
                     this.setState({
                         piecesByLocation: JSON.parse(move.board_after_move),
                         usedRolls: [...this.state.usedRolls, move.die_roll],
                     });
                     await sleep(2000);
                 }
+                this.playDiceRollSound();
                 this.setState({
                     diceRoll: [0, 0],
                     usedRolls: [],
                 });
-                await sleep(1500);
+                await sleep(1000);
+            } else if (result.result === "success") {
+                this.playPieceMoveSound();
             }
             this.setState({
                 piecesByLocation: JSON.parse(result.board),
@@ -66,10 +87,9 @@ export class BoardComponent extends React.Component<{}, State> {
                 winner: result.winner,
             });
         }
-        catch {
-            console.log('This move is not allowed')
+        catch(e) {
+            console.log(e)
         }
-
     }
 
     private async handleClick() {

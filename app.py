@@ -94,7 +94,7 @@ def game_thread():
             move_results.put("fail")
 
 
-def get_state(response):
+def get_state(response={}):
     if len(current_board) == 0:
         return {'board': "{}", 'dice_roll': [], 'used_rolls': []}
     board = current_board[0]
@@ -112,6 +112,8 @@ def get_state(response):
         state['opp_roll'] = opponents_activity['dice_roll']
     if 'board_after_your_last_turn' in response:
         state['board_after_your_last_turn'] = response['board_after_your_last_turn']
+    if 'result' in response:
+        state['result'] = response['result']
     return state
 
 
@@ -123,7 +125,7 @@ def hello_world():
 @app.route('/start-game')
 @cross_origin()
 def start_game():
-    return get_state("done")
+    return get_state()
 
 
 @app.route('/move-piece')
