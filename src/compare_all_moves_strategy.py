@@ -38,7 +38,7 @@ class CompareAllMoves(Strategy):
             'sum_single_distance_away_from_home': sum_single_distance_away_from_home,
         }
 
-    def move(self, board, colour, dice_roll, make_move):
+    def move(self, board, colour, dice_roll, make_move, opponents_activity):
 
         result = self.move_recursively(board, colour, dice_roll)
         not_a_double = len(dice_roll) == 2

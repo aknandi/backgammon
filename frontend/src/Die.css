@@ -3,6 +3,10 @@
     width: 5.5%;
 }
 
+.die.used {
+    opacity: 0.3;
+}
+
 .die img {
     width: 100%;
     margin: 0;

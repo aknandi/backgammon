@@ -12,6 +12,7 @@ type Props = {
     xposition: number,
     yposition: number,
     roll: number,
+    used: boolean,
 }
 
 export class DieComponent extends React.Component<Props, {}> {
@@ -40,10 +41,9 @@ export class DieComponent extends React.Component<Props, {}> {
         }
     }
 
-
     render() {
         return (
-            <div className='die' style={this.setStyle()} id={`${this.props.roll}`} >
+            <div className={this.getClassName()} style={this.setStyle()} id={`${this.props.roll}`} >
                 <img src={this.getSrc()} alt="die" />
             </div>
         )
@@ -54,5 +54,13 @@ export class DieComponent extends React.Component<Props, {}> {
             left: `${this.props.xposition}%`,
             top: `${this.props.yposition}%`
         };
+    }
+
+    private getClassName() {
+        let className = 'die';
+        if(this.props.used) {
+            className += ' used';
+        }
+        return className;
     }
 }

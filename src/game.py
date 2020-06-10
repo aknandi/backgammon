@@ -44,10 +44,14 @@ class Game:
             print('%s goes first' % self.first_player)
             self.board.print_board()
         i = self.first_player.value
+        moves = []
+        full_dice_roll = []
         while True:
+            previous_dice_roll = full_dice_roll.copy()
             dice_roll = [randint(1, 6), randint(1, 6)]
             if dice_roll[0] == dice_roll[1]:
                 dice_roll = [dice_roll[0]] * 4
+            full_dice_roll = dice_roll.copy()
             colour = Colour(i % 2)
             if verbose:
                 print("%s rolled %s" % (colour, dice_roll))
@@ -58,18 +62,25 @@ class Game:
                     raise MoveNotPossibleException("You cannot move that piece %d" % die_roll)
                 for roll in rolls_to_move:
                     piece = self.board.get_piece_at(location)
+                    original_location = location
                     location = self.board.move_piece(piece, roll)
                     dice_roll.remove(roll)
+                    moves.append({'start_location': original_location, 'die_roll': roll, 'end_location': location})
+                    previous_dice_roll.append(roll)
                 return rolls_to_move
 
             board_snapshot = self.board.to_json()
             dice_roll_snapshot = dice_roll.copy()
 
+            opponents_moves = moves.copy()
+            moves.clear()
+
             self.strategies[colour].move(
                 ReadOnlyBoard(self.board),
                 colour,
                 dice_roll.copy(),
-                lambda location, die_roll: handle_move(location, die_roll)
+                lambda location, die_roll: handle_move(location, die_roll),
+                {'dice_roll': previous_dice_roll, 'opponents_move': opponents_moves}
             )
 
             if verbose and len(dice_roll) > 0:

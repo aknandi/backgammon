@@ -5,10 +5,14 @@ import { LocationComponent } from './Location'
 import { DieComponent } from './Die'
 import { EndZoneComponent } from './EndZone'
 
+async function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 type State = {
     piecesByLocation: { [location: number]: { colour: Colour, count: number } },
     diceRoll: number[],
+    usedRolls: number[],
     winner: Colour | null,
 }
 
@@ -20,6 +24,7 @@ export class BoardComponent extends React.Component<{}, State> {
         this.state = {
             piecesByLocation: {},
             diceRoll: [],
+            usedRolls: [],
             winner: null,
         }
         this.handleClick = this.handleClick.bind(this)
@@ -29,11 +34,28 @@ export class BoardComponent extends React.Component<{}, State> {
         try {
             const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}`)
             const result = await response.json()
+            if(result.opp_move) {
+                this.setState({
+                    piecesByLocation: JSON.parse(result.board_after_your_last_turn),
+                    diceRoll: result.opp_roll,
+                    usedRolls: [],
+                });
+                await sleep(2000);
+                for(let i = 0; i < result.opp_move.length; i++) {
+                    let move = result.opp_move[i];
+                    this.setState({
+                        piecesByLocation: JSON.parse(move.board_after_move),
+                        usedRolls: [...this.state.usedRolls, move.die_roll],
+                    });
+                    await sleep(2000);
+                }
+            }
             this.setState({
                 piecesByLocation: JSON.parse(result.board),
                 diceRoll: result.dice_roll,
+                usedRolls: result.used_rolls,
                 winner: result.winner,
-            })
+            });
         }
         catch {
             console.log('This move is not allowed')
@@ -50,12 +72,12 @@ export class BoardComponent extends React.Component<{}, State> {
         this.setState({
             piecesByLocation: JSON.parse(result.board),
             diceRoll: result.dice_roll,
+            usedRolls: result.used_rolls,
             winner: result.winner,
         })
     }
 
     componentDidMount() {
-        (window as any).movePiece = this.movePiece.bind(this);
         fetch(`${this.backendurl}/start-game`)
             .then(res => res.json())
             .then(
@@ -63,6 +85,7 @@ export class BoardComponent extends React.Component<{}, State> {
                     this.setState({
                         piecesByLocation: JSON.parse(result.board),
                         diceRoll: result.dice_roll,
+                        usedRolls: result.used_rolls,
                         winner: result.winner,
                     });
                 },
@@ -196,12 +219,21 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderDice() {
         let dice = []
+        let usedRolls = [...this.state.usedRolls]
         for (let i = 0; i < this.state.diceRoll.length; i++) {
             let position = [1 + 8*(i + 1), 46]
+            let roll = this.state.diceRoll[i]
+            let used = false;
+            if(usedRolls.includes(roll)) {
+                used = true
+                const index = usedRolls.indexOf(roll);
+                usedRolls.splice(index, 1);
+            }
             dice.push(<DieComponent
                 xposition={position[0]}
                 yposition={position[1]}
-                roll={this.state.diceRoll[i]}
+                roll={roll}
+                used={used}
                 key={`dice-${i}`}
             ></DieComponent>)
         }

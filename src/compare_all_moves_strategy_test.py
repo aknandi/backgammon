@@ -13,7 +13,7 @@ class TestCompareAllMovesStrategy(TestBoardBase):
         self.add_many_pieces(1, Colour.WHITE, 3)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [6, 4], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [6, 4], self.board.get_move_lambda(), {})
 
         self.assert_location(7, Contains(2).pieces())
 
@@ -25,7 +25,7 @@ class TestCompareAllMovesStrategy(TestBoardBase):
         self.add_many_pieces(1, Colour.WHITE, 18)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [3, 4], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [3, 4], self.board.get_move_lambda(), {})
 
         self.assert_location(21, Contains(2).pieces())
         self.assert_location(20, Contains(2).pieces())
@@ -37,7 +37,7 @@ class TestCompareAllMovesStrategy(TestBoardBase):
         self.add_many_pieces(2, Colour.WHITE, 19)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [5, 2], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [5, 2], self.board.get_move_lambda(), {})
 
         self.assert_location(12, Contains(2).pieces())
         self.assert_location(17, Contains(2).pieces())
@@ -52,7 +52,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(1, Colour.WHITE, 23)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [6, 4], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [6, 4], self.board.get_move_lambda(), {})
 
         self.assert_location(23, Contains(0).pieces())
 
@@ -61,7 +61,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(2, Colour.BLACK, 3)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [3, 4], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [3, 4], self.board.get_move_lambda(), {})
 
         self.assert_location(4, Contains(1).pieces())
         self.assert_location(0, Contains(1).pieces())
@@ -72,7 +72,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(2, Colour.BLACK, 17)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [5, 5, 5, 5], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [5, 5, 5, 5], self.board.get_move_lambda(), {})
 
         self.assert_location(23, Contains(3).pieces())
         self.assert_location(12, Contains(1).pieces())
@@ -82,7 +82,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(2, Colour.BLACK, 9)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [6, 1], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [6, 1], self.board.get_move_lambda(), {})
 
         self.assert_location(3, Contains(1).pieces())
         self.assert_location(10, Contains(1).pieces())
@@ -96,7 +96,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(2, Colour.BLACK, 22)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda(), {})
 
         self.assert_location(13, Contains(1).pieces())
 
@@ -105,7 +105,7 @@ class TestCompareAllMovesValidity(TestBoardBase):
         self.add_many_pieces(1, Colour.BLACK, 14)
 
         strategy = CompareAllMovesSimple()
-        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda())
+        strategy.move(self.board, Colour.WHITE, [2, 1], self.board.get_move_lambda(), {})
 
         self.assert_location(25, Contains(1).pieces())
 

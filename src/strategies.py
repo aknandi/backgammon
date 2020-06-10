@@ -5,7 +5,7 @@ from src.move_not_possible_exception import MoveNotPossibleException
 
 
 class Strategy:
-    def move(self, board, colour, dice_roll, make_move):
+    def move(self, board, colour, dice_roll, make_move, opponents_activity):
         raise NotImplemented()
 
 
@@ -15,7 +15,7 @@ class MoveFurthestBackStrategy(Strategy):
     def get_difficulty():
         return "Medium"
 
-    def move(self, board, colour, dice_roll, make_move):
+    def move(self, board, colour, dice_roll, make_move, opponents_activity):
         could_not_move_first_roll = False
 
         for i, die_roll in enumerate(dice_roll):
@@ -46,7 +46,7 @@ class HumanStrategy(Strategy):
     def get_difficulty():
         return "N/A"
 
-    def move(self, board, colour, dice_roll, make_move):
+    def move(self, board, colour, dice_roll, make_move, opponents_activity):
         print("It is %s's turn, you are %s, your roll is %s" % (self.__name, colour, dice_roll))
         while len(dice_roll) > 0 and not board.has_game_ended():
             board.print_board()
@@ -96,7 +96,7 @@ class MoveRandomPiece(Strategy):
     def get_difficulty():
         return "Easy"
 
-    def move(self, board, colour, dice_roll, make_move):
+    def move(self, board, colour, dice_roll, make_move, opponents_activity):
         for die_roll in dice_roll:
             valid_pieces = board.get_pieces(colour)
             shuffle(valid_pieces)

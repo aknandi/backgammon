@@ -18,7 +18,7 @@ if __name__ == '__main__':
         board=board,
         colour=Colour.load(data['colour_to_move']),
         dice_roll=data['dice_roll'],
-        make_move=lambda l, r: board.move_piece(board.get_piece_at(l), r)
-    )
+        make_move=lambda l, r: board.move_piece(board.get_piece_at(l), r),
+        opponents_activity={})
 
     board.print_board()
