@@ -37,8 +37,12 @@ export class BoardComponent extends React.Component<{}, State> {
             if(result.opp_move) {
                 this.setState({
                     piecesByLocation: JSON.parse(result.board_after_your_last_turn),
-                    diceRoll: result.opp_roll,
+                    diceRoll: [0, 0],
                     usedRolls: [],
+                });
+                await sleep(1500);
+                this.setState({
+                    diceRoll: result.opp_roll,
                 });
                 await sleep(2000);
                 for(let i = 0; i < result.opp_move.length; i++) {
@@ -49,6 +53,11 @@ export class BoardComponent extends React.Component<{}, State> {
                     });
                     await sleep(2000);
                 }
+                this.setState({
+                    diceRoll: [0, 0],
+                    usedRolls: [],
+                });
+                await sleep(1500);
             }
             this.setState({
                 piecesByLocation: JSON.parse(result.board),

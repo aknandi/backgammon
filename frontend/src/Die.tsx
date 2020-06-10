@@ -7,6 +7,7 @@ import die3 from './die-3.svg'
 import die4 from './die-4.svg'
 import die5 from './die-5.svg'
 import die6 from './die-6.svg'
+import dieRolling from './die-rolling.gif'
 
 type Props = {
     xposition: number,
@@ -36,6 +37,8 @@ export class DieComponent extends React.Component<Props, {}> {
                 return die5
             case 6:
                 return die6
+            case 0:
+                return dieRolling
             default:
                 throw new Error('Die roll not found')
         }
