@@ -67,7 +67,7 @@ def game_thread():
                         dice_roll.remove(roll)
                         used_die_rolls[0].append(roll)
 
-                    if not len(dice_roll) == 0:
+                    if len(dice_roll) > 0 and not board.no_moves_possible(colour, dice_roll):
                         move_results.put({
                             'result': 'success'
                         })
