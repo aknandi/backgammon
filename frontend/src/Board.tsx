@@ -18,7 +18,9 @@ type State = {
 
 export class BoardComponent extends React.Component<{}, State> {
 
-    private readonly backendurl = 'http://localhost:5000'
+    private readonly backendurl = 'http://9f5534650888.ngrok.io'
+    private readonly audioDiceRoll = new Audio(`${process.env.PUBLIC_URL}/dice-roll.mp3`);
+    private readonly audioPieceMove = new Audio(`${process.env.PUBLIC_URL}/piece-move.mp3`);
     constructor(props: any) {
         super(props);
         this.state = {
@@ -31,13 +33,11 @@ export class BoardComponent extends React.Component<{}, State> {
     }
 
     private playDiceRollSound() {
-        var audio = new Audio(`${process.env.PUBLIC_URL}/dice-roll.mp3`);
-        audio.play();
+        this.audioDiceRoll.play();
     }
 
     private playPieceMoveSound() {
-        var audio = new Audio(`${process.env.PUBLIC_URL}/piece-move.mp3`);
-        audio.play();
+        this.audioPieceMove.play();
     }
 
     private async movePiece(location: number, dieRoll: number) {
