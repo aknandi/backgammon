@@ -11,6 +11,7 @@ type Props = {
   xposition: number,
   yposition: number,
   onDrop: (location: number) => Promise<void>,
+  isMoveable: boolean,
 }
 
 export enum Colour {
@@ -27,7 +28,7 @@ export class PieceComponent extends React.Component<Props, {}> {
   }
 
   componentDidMount() {
-    if (this.props.colour === Colour.Black) {
+    if (!this.props.isMoveable) {
       return
     }
     interact(this.domElement.current!)

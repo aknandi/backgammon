@@ -14,11 +14,12 @@ type State = {
     diceRoll: number[],
     usedRolls: number[],
     winner: Colour | null,
+    computersGo: boolean,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
 
-    private readonly backendurl = 'http://9f5534650888.ngrok.io'
+    private readonly backendurl = 'http://localhost:5000'
     private readonly audioDiceRoll = new Audio(`${process.env.PUBLIC_URL}/dice-roll.mp3`);
     private readonly audioPieceMove = new Audio(`${process.env.PUBLIC_URL}/piece-move.mp3`);
     constructor(props: any) {
@@ -28,6 +29,7 @@ export class BoardComponent extends React.Component<{}, State> {
             diceRoll: [],
             usedRolls: [],
             winner: null,
+            computersGo: false,
         }
         this.handleClick = this.handleClick.bind(this)
     }
@@ -56,6 +58,7 @@ export class BoardComponent extends React.Component<{}, State> {
                 this.setState({
                     diceRoll: [0, 0],
                     usedRolls: [],
+                    computersGo: true,
                 });
                 await sleep(1000);
                 this.setState({
@@ -85,6 +88,7 @@ export class BoardComponent extends React.Component<{}, State> {
                 diceRoll: result.dice_roll,
                 usedRolls: result.used_rolls,
                 winner: result.winner,
+                computersGo: false,
             });
         }
         catch(e) {
@@ -218,14 +222,16 @@ export class BoardComponent extends React.Component<{}, State> {
             let colourAtLocation = locations[+location].colour
             for (let i = 0; i < locations[+location].count; i++) {
                 let position = this.locationToPosition(+location, i, locations[+location].count)
+                let canMove = !this.state.computersGo && colourAtLocation === Colour.White
                 pieces.push(<PieceComponent
                     colour={colourAtLocation}
                     xposition={position[0]}
                     yposition={position[1]}
-                    key={`${location}-${i}`}
+                    key={`${location}-${i}-${canMove}`}
                     onDrop={async newLocation => {
                         await this.handlePieceDrop(+location, newLocation)
                     }}
+                    isMoveable={canMove}
                 ></PieceComponent>)
             }
         }
