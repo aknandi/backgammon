@@ -19,7 +19,8 @@ type State = {
     winner: Colour | null,
     computersGo: boolean,
     playerCanMove: boolean,
-    muted: boolean
+    muted: boolean,
+    difficultly: string,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -37,8 +38,10 @@ export class BoardComponent extends React.Component<{}, State> {
             computersGo: false,
             playerCanMove: true,
             muted: false,
+            difficultly: 'veryhard',
         }
         this.handleClick = this.handleClick.bind(this)
+        this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
     }
 
     private playDiceRollSound() {
@@ -125,7 +128,7 @@ export class BoardComponent extends React.Component<{}, State> {
         if (!window.confirm("Are you sure you want to start a new game?")) {
             return
         } 
-        const response = await fetch(`${this.backendurl}/new-game`)
+        const response = await fetch(`${this.backendurl}/new-game?difficulty=${this.state.difficultly}`)
         const result = await response.json()
         this.setState({
             piecesByLocation: JSON.parse(result.board),
@@ -336,6 +339,26 @@ export class BoardComponent extends React.Component<{}, State> {
         })
     }
 
+    private renderDifficultyMenu() {
+        return (
+            <div className='strategy-menu' id='menu'>
+                <select value={this.state.difficultly} onChange={this.handleDifficultyChange} name="strategy">
+                    <option value="">--Please choose a difficulty--</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="veryhard">Very Hard</option>
+                </select>
+            </div>
+        )
+    }
+
+    private handleDifficultyChange(event: any) {
+        this.setState({
+            difficultly: event.target.value
+        });
+    }
+
     render() {
         return (
             <div className='board' id='board'>
@@ -356,8 +379,9 @@ export class BoardComponent extends React.Component<{}, State> {
                     />
                 {this.renderWinner()} 
                 {this.renderNoMoreMoves()}
+                {this.renderDifficultyMenu()}
                 <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
-                <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()}/>
+                <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()} alt='mute'/>
             </div>
         )
     }

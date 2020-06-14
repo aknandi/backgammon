@@ -7,7 +7,8 @@ from flask_cors import CORS, cross_origin
 
 from src.board import Board
 from src.colour import Colour
-from src.compare_all_moves_strategy import CompareAllMovesWeightingDistanceAndSingles
+from src.compare_all_moves_strategy import CompareAllMovesSimple, CompareAllMovesWeightingDistanceAndSingles
+from src.strategies import MoveRandomPiece, MoveFurthestBackStrategy
 from src.game import Game
 from random import randint
 from src.strategies import Strategy
@@ -30,7 +31,7 @@ def set_current_move(dice_roll):
     del used_die_rolls[1:]
 
 
-def game_thread():
+def game_thread(difficulty):
     class ApiStrategy(Strategy):
 
         def __init__(self) -> None:
@@ -109,9 +110,23 @@ def game_thread():
                 'board_after_your_last_turn': board_json_before_opp_move,
             })
 
+    print(difficulty)
+    if difficulty == 'easy':
+        opponent_strategy = MoveRandomPiece()
+    elif difficulty == 'medium':
+        opponent_strategy = MoveFurthestBackStrategy()
+    elif difficulty == 'hard':
+        opponent_strategy = CompareAllMovesSimple()
+    elif difficulty == 'veryhard':
+        opponent_strategy = CompareAllMovesWeightingDistanceAndSingles()
+    else:
+        raise Exception('Not a valid strategy')
+
+    print('[Game]: Starting game with strategy %s' % opponent_strategy.__class__.__name__)
+
     game = Game(
         white_strategy=ApiStrategy(),
-        black_strategy=CompareAllMovesWeightingDistanceAndSingles(),
+        black_strategy=opponent_strategy,
         first_player=Colour(randint(0, 1))
     )
     current_board.append(game.board)
@@ -189,6 +204,8 @@ def move_piece():
 @app.route('/new-game')
 @cross_origin()
 def new_game():
+    difficulty = request.args.get('difficulty', default='hard', type=str)
+    print(difficulty)
     print('[API]: new-game called')
     if len(current_board) != 0:
         print('[API]: Sending end_game')
@@ -197,7 +214,7 @@ def new_game():
     current_roll.clear()
     time.sleep(1)
     print('[API]: Starting new game thread')
-    threading.Thread(target=game_thread).start()
+    threading.Thread(target=game_thread, args=[difficulty]).start()
     print('[API]: Waiting for move_results...')
     response = move_results.get()
     print('[API]: ...got result, responding to frontend')
