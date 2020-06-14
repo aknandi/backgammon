@@ -5,6 +5,9 @@ import { LocationComponent } from './Location'
 import { DieComponent } from './Die'
 import { EndZoneComponent } from './EndZone'
 
+import audioOn from './audioOn.svg'
+import audioOff from './audioOff.svg'
+
 async function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -16,6 +19,7 @@ type State = {
     winner: Colour | null,
     computersGo: boolean,
     playerCanMove: boolean,
+    muted: boolean
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -32,16 +36,21 @@ export class BoardComponent extends React.Component<{}, State> {
             winner: null,
             computersGo: false,
             playerCanMove: true,
+            muted: false,
         }
         this.handleClick = this.handleClick.bind(this)
     }
 
     private playDiceRollSound() {
-        this.audioDiceRoll.play();
+        if(!this.state.muted) {
+            this.audioDiceRoll.play();
+        }
     }
 
     private playPieceMoveSound() {
-        this.audioPieceMove.play();
+        if(!this.state.muted) {
+            this.audioPieceMove.play();
+        }
     }
 
     private async movePiece(location: number, dieRoll: number, endTurn: boolean=false) {
@@ -313,6 +322,12 @@ export class BoardComponent extends React.Component<{}, State> {
         }
     }
 
+    private handleMuteClick() {
+        this.setState({
+            muted: !this.state.muted,
+        })
+    }
+
     render() {
         return (
             <div className='board' id='board'>
@@ -334,6 +349,7 @@ export class BoardComponent extends React.Component<{}, State> {
                 {this.renderWinner()} 
                 {this.renderNoMoreMoves()}
                 <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
+                <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()}/>
             </div>
         )
     }

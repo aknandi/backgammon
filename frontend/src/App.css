@@ -30,6 +30,13 @@ body {
   font-size: calc(1vw);
 }
 
+.mutebutton {
+  top: 47.5%;
+  left: 94%;
+  height: 5%;
+  position: absolute;
+}
+
 .winner {
   top: 44.5%;
   left: 55%;
@@ -39,9 +46,9 @@ body {
 }
 
 .cantmove {
-  top: 44.5%;
+  top: 47.5%;
   left: 50%;
-  font-size: calc(5vw);
+  font-size: calc(3vw);
   color: yellow;
   position: absolute;
 }
