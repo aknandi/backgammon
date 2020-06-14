@@ -15,6 +15,7 @@ type State = {
     usedRolls: number[],
     winner: Colour | null,
     computersGo: boolean,
+    playerCanMove: boolean,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -30,6 +31,7 @@ export class BoardComponent extends React.Component<{}, State> {
             usedRolls: [],
             winner: null,
             computersGo: false,
+            playerCanMove: true,
         }
         this.handleClick = this.handleClick.bind(this)
     }
@@ -42,9 +44,9 @@ export class BoardComponent extends React.Component<{}, State> {
         this.audioPieceMove.play();
     }
 
-    private async movePiece(location: number, dieRoll: number) {
+    private async movePiece(location: number, dieRoll: number, endTurn: boolean=false) {
         try {
-            const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}`)
+            const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}&end-turn=${endTurn}`)
             const result = await response.json()
             if (result.opp_move) {
                 this.playPieceMoveSound();
@@ -74,12 +76,14 @@ export class BoardComponent extends React.Component<{}, State> {
                     });
                     await sleep(2000);
                 }
-                this.playDiceRollSound();
-                this.setState({
-                    diceRoll: [0, 0],
-                    usedRolls: [],
-                });
-                await sleep(1000);
+                if(result.winner == null) {
+                    this.playDiceRollSound();
+                    this.setState({
+                        diceRoll: [0, 0],
+                        usedRolls: [],
+                    });
+                    await sleep(1000);
+                }
             } else if (result.result === "success") {
                 this.playPieceMoveSound();
             }
@@ -90,6 +94,18 @@ export class BoardComponent extends React.Component<{}, State> {
                 winner: result.winner,
                 computersGo: false,
             });
+
+            if (!result.player_can_move && this.state.winner == null) {
+                this.setState({
+                    playerCanMove: false,
+                    computersGo: true,
+                })
+                await sleep(3000)
+                this.setState({
+                    playerCanMove: true,
+                })
+                this.movePiece(0, 0, true)
+            }
         }
         catch(e) {
             console.log(e)
@@ -291,6 +307,12 @@ export class BoardComponent extends React.Component<{}, State> {
         }
     }
 
+    private renderNoMoreMoves() {
+        if (!this.state.playerCanMove) {
+            return <div className='cantmove'>You can't move :( </div>
+        }
+    }
+
     render() {
         return (
             <div className='board' id='board'>
@@ -310,6 +332,7 @@ export class BoardComponent extends React.Component<{}, State> {
                     piecesCount={15 - this.getPieceCount(Colour.Black)}
                     />
                 {this.renderWinner()} 
+                {this.renderNoMoreMoves()}
                 <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
             </div>
         )

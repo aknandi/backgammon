@@ -8,6 +8,9 @@ class Strategy:
     def move(self, board, colour, dice_roll, make_move, opponents_activity):
         raise NotImplemented()
 
+    def game_over(self, opponents_activity):
+        pass
+
 
 class MoveFurthestBackStrategy(Strategy):
 

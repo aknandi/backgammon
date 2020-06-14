@@ -103,6 +103,10 @@ class Game:
             if self.board.has_game_ended():
                 if verbose:
                     print('%s has won!' % self.board.who_won())
+                self.strategies[colour.other()].game_over({
+                    'dice_roll': full_dice_roll,
+                    'opponents_move': moves
+                })
                 break
 
     def get_rolls_to_move(self, location, requested_move, available_rolls):
