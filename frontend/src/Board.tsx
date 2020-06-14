@@ -233,9 +233,17 @@ export class BoardComponent extends React.Component<{}, State> {
     private async handlePieceDrop(locationStart: number, locationEnd: number) {
         console.log(locationStart)
         console.log(locationEnd)
+
+        let diceRollsLeft = [...this.state.diceRoll]
+        for (let i = 0; i < this.state.usedRolls.length; i++) {
+            let roll = this.state.usedRolls[i]
+            const index = diceRollsLeft.indexOf(roll);
+            diceRollsLeft.splice(index, 1);
+        }
+
         let dieRoll = Math.abs(locationEnd - locationStart)
-        if (locationEnd === 25 && !this.state.diceRoll.includes(dieRoll) && dieRoll < Math.max(...this.state.diceRoll)) {
-            dieRoll = Math.min(...this.state.diceRoll.filter(x => x > dieRoll))
+        if (locationEnd === 25 && !diceRollsLeft.includes(dieRoll) && dieRoll < Math.max(...diceRollsLeft)) {
+            dieRoll = Math.min(...diceRollsLeft.filter(x => x > dieRoll))
         }
         await this.movePiece(locationStart, dieRoll)
     }
