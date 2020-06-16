@@ -21,6 +21,7 @@ type State = {
     playerCanMove: boolean,
     muted: boolean,
     difficultly: string,
+    showNewGameModal: boolean,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -39,24 +40,27 @@ export class BoardComponent extends React.Component<{}, State> {
             playerCanMove: true,
             muted: false,
             difficultly: 'veryhard',
+            showNewGameModal: false,
         }
-        this.handleClick = this.handleClick.bind(this)
+        this.handleNewGameClick = this.handleNewGameClick.bind(this)
         this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
+        this.handleModalConfirmClick = this.handleModalConfirmClick.bind(this);
+        this.handleExitModalClick = this.handleExitModalClick.bind(this);
     }
 
     private playDiceRollSound() {
-        if(!this.state.muted) {
+        if (!this.state.muted) {
             this.audioDiceRoll.play();
         }
     }
 
     private playPieceMoveSound() {
-        if(!this.state.muted) {
+        if (!this.state.muted) {
             this.audioPieceMove.play();
         }
     }
 
-    private async movePiece(location: number, dieRoll: number, endTurn: boolean=false) {
+    private async movePiece(location: number, dieRoll: number, endTurn: boolean = false) {
         try {
             const response = await fetch(`${this.backendurl}/move-piece?location=${location}&die-roll=${dieRoll}&end-turn=${endTurn}`)
             const result = await response.json()
@@ -79,7 +83,7 @@ export class BoardComponent extends React.Component<{}, State> {
                     diceRoll: result.opp_roll,
                 });
                 await sleep(2000);
-                for(let i = 0; i < result.opp_move.length; i++) {
+                for (let i = 0; i < result.opp_move.length; i++) {
                     let move = result.opp_move[i];
                     this.playPieceMoveSound();
                     this.setState({
@@ -88,7 +92,7 @@ export class BoardComponent extends React.Component<{}, State> {
                     });
                     await sleep(2000);
                 }
-                if(result.winner == null) {
+                if (result.winner == null) {
                     this.playDiceRollSound();
                     this.setState({
                         diceRoll: [0, 0],
@@ -119,22 +123,14 @@ export class BoardComponent extends React.Component<{}, State> {
                 this.movePiece(0, 0, true)
             }
         }
-        catch(e) {
+        catch (e) {
             console.log(e)
         }
     }
 
-    private async handleClick() {
-        if (!window.confirm("Are you sure you want to start a new game?")) {
-            return
-        } 
-        const response = await fetch(`${this.backendurl}/new-game?difficulty=${this.state.difficultly}`)
-        const result = await response.json()
+    private async handleNewGameClick() {
         this.setState({
-            piecesByLocation: JSON.parse(result.board),
-            diceRoll: result.dice_roll,
-            usedRolls: result.used_rolls,
-            winner: result.winner,
+            showNewGameModal: true
         })
     }
 
@@ -168,7 +164,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
         // If the height goes that of 5 pieces start overlapping pieces such that they're always the same height
         if (count > 5) {
-            y_sep = max_height/count
+            y_sep = max_height / count
         }
         if (location < 7) { // bottom right
             index = 7 - location
@@ -189,7 +185,7 @@ export class BoardComponent extends React.Component<{}, State> {
         }
 
         // Taken location is the centre of the board
-        if (location === 0 ) {
+        if (location === 0) {
             xpos = 42.0
             ypos = 40 - y_sep * i
         } else if (location === 25) {
@@ -292,10 +288,10 @@ export class BoardComponent extends React.Component<{}, State> {
         let dice = []
         let usedRolls = [...this.state.usedRolls]
         for (let i = 0; i < this.state.diceRoll.length; i++) {
-            let position = [1 + 8*(i + 1), 46]
+            let position = [1 + 8 * (i + 1), 46]
             let roll = this.state.diceRoll[i]
             let used = false;
-            if(usedRolls.includes(roll)) {
+            if (usedRolls.includes(roll)) {
                 used = true
                 const index = usedRolls.indexOf(roll);
                 usedRolls.splice(index, 1);
@@ -311,7 +307,7 @@ export class BoardComponent extends React.Component<{}, State> {
         return dice
     }
 
-    private getPieceCount(colour : Colour) : number {
+    private getPieceCount(colour: Colour): number {
         let numberOfPieces = 0
         for (let location of Object.keys(this.state.piecesByLocation)) {
             if (this.state.piecesByLocation[+location].colour === colour) {
@@ -323,7 +319,7 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderWinner() {
         if (this.state.winner) {
-            return <div className='winner'>{this.state.winner === Colour.White ? "You won :)": "You lost :("} </div>
+            return <div className='winner'>{this.state.winner === Colour.White ? "You won :)" : "You lost :("} </div>
         }
     }
 
@@ -341,8 +337,8 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderDifficultyMenu() {
         return (
-            <div className='strategy-menu' id='menu'>
-                <select value={this.state.difficultly} onChange={this.handleDifficultyChange} name="strategy">
+            <div id='menu'>
+                <select className='strategy-select' value={this.state.difficultly} onChange={this.handleDifficultyChange} name="strategy">
                     <option value="">--Please choose a difficulty--</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -359,6 +355,41 @@ export class BoardComponent extends React.Component<{}, State> {
         });
     }
 
+    private async handleModalConfirmClick() {
+        const response = await fetch(`${this.backendurl}/new-game?difficulty=${this.state.difficultly}`)
+        const result = await response.json()
+        this.setState({
+            piecesByLocation: JSON.parse(result.board),
+            diceRoll: result.dice_roll,
+            usedRolls: result.used_rolls,
+            winner: result.winner,
+            showNewGameModal: false,
+        })
+    }
+
+    private handleExitModalClick() {
+        this.setState({
+            showNewGameModal: false,
+        })
+    }
+
+    private renderModal() {
+        if (this.state.showNewGameModal) {
+            return <div className="modal">
+                <div className="modal-content">
+                    <button className="close" onClick={this.handleExitModalClick}>&times;</button>
+                    <p>Are you sure you want to start a new game?</p>
+                    <p>Select the difficulty</p>
+                    {this.renderDifficultyMenu()}
+                    <br></br>
+                    <button className='modalbutton' onClick={this.handleModalConfirmClick}> Start New Game </button>
+                </div>
+            </div>
+        }
+
+
+    }
+
     render() {
         return (
             <div className='board' id='board'>
@@ -370,18 +401,18 @@ export class BoardComponent extends React.Component<{}, State> {
                     xposition={92}
                     yposition={3.5}
                     piecesCount={15 - this.getPieceCount(Colour.White)}
-                    />
+                />
                 <EndZoneComponent
                     colour={Colour.Black}
                     xposition={92}
                     yposition={52.8}
                     piecesCount={15 - this.getPieceCount(Colour.Black)}
-                    />
-                {this.renderWinner()} 
+                />
+                {this.renderWinner()}
                 {this.renderNoMoreMoves()}
-                {this.renderDifficultyMenu()}
-                <button className='newgamebutton' onClick={this.handleClick}> New Game </button>
-                <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()} alt='mute'/>
+                {this.renderModal()}
+                <button className='newgamebutton' onClick={this.handleNewGameClick}> New Game </button>
+                <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()} alt='mute' />
             </div>
         )
     }
