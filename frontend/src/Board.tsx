@@ -8,6 +8,8 @@ import { EndZoneComponent } from './EndZone'
 import audioOn from './audioOn.svg'
 import audioOff from './audioOff.svg'
 
+import Cookies from "js-cookie"
+
 async function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -38,8 +40,8 @@ export class BoardComponent extends React.Component<{}, State> {
             winner: null,
             computersGo: false,
             playerCanMove: true,
-            muted: false,
-            difficultly: 'veryhard',
+            muted: Boolean(Cookies.get('muted')) ?? false,
+            difficultly: Cookies.get('difficulty') ?? 'veryhard',
             showNewGameModal: false,
         }
         this.handleNewGameClick = this.handleNewGameClick.bind(this)
@@ -330,8 +332,14 @@ export class BoardComponent extends React.Component<{}, State> {
     }
 
     private handleMuteClick() {
+        let newValue = !this.state.muted
+        if(newValue) {
+            Cookies.set('muted', 'true')
+        } else {
+            Cookies.remove('muted')
+        }
         this.setState({
-            muted: !this.state.muted,
+            muted: newValue,
         })
     }
 
@@ -356,6 +364,7 @@ export class BoardComponent extends React.Component<{}, State> {
     }
 
     private async handleModalConfirmClick() {
+        Cookies.set('difficulty', this.state.difficultly)
         const response = await fetch(`${this.backendurl}/new-game?difficulty=${this.state.difficultly}`)
         const result = await response.json()
         this.setState({
