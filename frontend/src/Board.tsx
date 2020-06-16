@@ -345,9 +345,8 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private renderDifficultyMenu() {
         return (
-            <div id='menu'>
+            <div>
                 <select className='strategy-select' value={this.state.difficultly} onChange={this.handleDifficultyChange} name="strategy">
-                    <option value="">--Please choose a difficulty--</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
