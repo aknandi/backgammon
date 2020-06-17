@@ -10,12 +10,16 @@ class CompareAllMoves(Strategy):
 
     def assess_board(self, colour, myboard):
         pieces = myboard.get_pieces(colour)
+        pieces_on_board = len(pieces)
         sum_distances = 0
         number_of_singles = 0
         number_occupied_spaces = 0
         sum_single_distance_away_from_home = 0
+        sum_distances_to_endzone = 0
         for piece in pieces:
             sum_distances = sum_distances + piece.spaces_to_home()
+            if piece.spaces_to_home() > 6:
+                sum_distances_to_endzone += piece.spaces_to_home() - 6
         for location in range(1, 25):
             pieces = myboard.pieces_at(location)
             if len(pieces) != 0 and pieces[0].colour == colour:
@@ -36,6 +40,8 @@ class CompareAllMoves(Strategy):
             'sum_distances_opponent': sum_distances_opponent,
             'number_of_singles': number_of_singles,
             'sum_single_distance_away_from_home': sum_single_distance_away_from_home,
+            'pieces_on_board': pieces_on_board,
+            'sum_distances_to_endzone': sum_distances_to_endzone,
         }
 
     def move(self, board, colour, dice_roll, make_move, opponents_activity):
@@ -130,4 +136,29 @@ class CompareAllMovesWeightingDistanceAndSingles(CompareAllMoves):
                       board_stats['number_occupied_spaces'] - board_stats['opponents_taken_pieces']
         return board_value
 
+
+class CompareAllMovesWeightingDistanceAndSinglesWithEndGame(CompareAllMoves):
+
+    def evaluate_board(self, myboard, colour):
+        board_stats = self.assess_board(colour, myboard)
+
+        board_value = board_stats['sum_distances'] - float(board_stats['sum_distances_opponent']) / 3 + \
+                      float(board_stats['sum_single_distance_away_from_home']) / 6 - \
+                      board_stats['number_occupied_spaces'] - board_stats['opponents_taken_pieces'] + \
+                      3 * board_stats['pieces_on_board']
+
+        return board_value
+
+
+class CompareAllMovesWeightingDistanceAndSinglesWithEndGame2(CompareAllMoves):
+
+    def evaluate_board(self, myboard, colour):
+        board_stats = self.assess_board(colour, myboard)
+
+        board_value = board_stats['sum_distances'] - float(board_stats['sum_distances_opponent']) / 3 + \
+                      float(board_stats['sum_single_distance_away_from_home']) / 6 - \
+                      board_stats['number_occupied_spaces'] - board_stats['opponents_taken_pieces'] + \
+                      3 * board_stats['pieces_on_board'] + float(board_stats['sum_distances_to_endzone']) / 6
+
+        return board_value
 

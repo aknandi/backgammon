@@ -347,6 +347,7 @@ export class BoardComponent extends React.Component<{}, State> {
         return (
             <div>
                 <select className='strategy-select' value={this.state.difficultly} onChange={this.handleDifficultyChange} name="strategy">
+                    <option value="veryeasy">Very Easy</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>

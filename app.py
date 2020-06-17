@@ -7,7 +7,10 @@ from flask_cors import CORS, cross_origin
 
 from src.board import Board
 from src.colour import Colour
-from src.compare_all_moves_strategy import CompareAllMovesSimple, CompareAllMovesWeightingDistanceAndSingles
+from src.compare_all_moves_strategy import CompareAllMovesSimple, \
+    CompareAllMovesWeightingDistanceAndSingles, \
+    CompareAllMovesWeightingDistanceAndSinglesWithEndGame, \
+    CompareAllMovesWeightingDistanceAndSinglesWithEndGame2
 from src.strategies import MoveRandomPiece, MoveFurthestBackStrategy
 from src.game import Game
 from random import randint
@@ -111,14 +114,16 @@ def game_thread(difficulty):
             })
 
     print(difficulty)
-    if difficulty == 'easy':
-        opponent_strategy = MoveRandomPiece()
-    elif difficulty == 'medium':
+    if difficulty == 'veryeasy':
         opponent_strategy = MoveFurthestBackStrategy()
-    elif difficulty == 'hard':
+    elif difficulty == 'easy':
         opponent_strategy = CompareAllMovesSimple()
-    elif difficulty == 'veryhard':
+    elif difficulty == 'medium':
         opponent_strategy = CompareAllMovesWeightingDistanceAndSingles()
+    elif difficulty == 'hard':
+        opponent_strategy = CompareAllMovesWeightingDistanceAndSinglesWithEndGame()
+    elif difficulty == 'veryhard':
+        opponent_strategy = CompareAllMovesWeightingDistanceAndSinglesWithEndGame2()
     else:
         raise Exception('Not a valid strategy')
 
