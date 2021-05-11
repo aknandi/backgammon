@@ -7,6 +7,7 @@ import { EndZoneComponent } from './EndZone'
 
 import audioOn from './audioOn.svg'
 import audioOff from './audioOff.svg'
+import settingsCog from './settingsCog.svg'
 
 import Cookies from "js-cookie"
 
@@ -24,6 +25,8 @@ type State = {
     muted: boolean,
     difficultly: string,
     showNewGameModal: boolean,
+    showSettingsModal: boolean,
+    computerSpeed: number,
 }
 
 export class BoardComponent extends React.Component<{}, State> {
@@ -43,6 +46,8 @@ export class BoardComponent extends React.Component<{}, State> {
             muted: Boolean(Cookies.get('muted')) ?? false,
             difficultly: Cookies.get('difficulty') ?? 'veryhard',
             showNewGameModal: false,
+            showSettingsModal: false,
+            computerSpeed: 1000,
         }
         this.handleNewGameClick = this.handleNewGameClick.bind(this)
         this.handleDifficultyChange = this.handleDifficultyChange.bind(this);
@@ -73,18 +78,18 @@ export class BoardComponent extends React.Component<{}, State> {
                     diceRoll: [],
                     usedRolls: [],
                 });
-                await sleep(750);
+                await sleep(0.75*this.state.computerSpeed);
                 this.playDiceRollSound();
                 this.setState({
                     diceRoll: [0, 0],
                     usedRolls: [],
                     computersGo: true,
                 });
-                await sleep(1000);
+                await sleep(this.state.computerSpeed);
                 this.setState({
                     diceRoll: result.opp_roll,
                 });
-                await sleep(2000);
+                await sleep(2*this.state.computerSpeed);
                 for (let i = 0; i < result.opp_move.length; i++) {
                     let move = result.opp_move[i];
                     this.playPieceMoveSound();
@@ -92,7 +97,7 @@ export class BoardComponent extends React.Component<{}, State> {
                         piecesByLocation: JSON.parse(move.board_after_move),
                         usedRolls: [...this.state.usedRolls, move.die_roll],
                     });
-                    await sleep(2000);
+                    await sleep(2*this.state.computerSpeed);
                 }
                 if (result.winner == null) {
                     this.playDiceRollSound();
@@ -100,7 +105,7 @@ export class BoardComponent extends React.Component<{}, State> {
                         diceRoll: [0, 0],
                         usedRolls: [],
                     });
-                    await sleep(1000);
+                    await sleep(this.state.computerSpeed);
                 }
             } else if (result.result === "success") {
                 this.playPieceMoveSound();
@@ -132,7 +137,8 @@ export class BoardComponent extends React.Component<{}, State> {
 
     private async handleNewGameClick() {
         this.setState({
-            showNewGameModal: true
+            showNewGameModal: true,
+            showSettingsModal: false,
         })
     }
 
@@ -379,10 +385,17 @@ export class BoardComponent extends React.Component<{}, State> {
     private handleExitModalClick() {
         this.setState({
             showNewGameModal: false,
+            showSettingsModal: false,
         })
     }
 
-    private renderModal() {
+    private handleSettingsClick() {
+        this.setState({
+            showSettingsModal: true,
+        })
+    }
+
+    private renderNewGameModal() {
         if (this.state.showNewGameModal) {
             return <div className="modal">
                 <div className="modal-content">
@@ -395,8 +408,28 @@ export class BoardComponent extends React.Component<{}, State> {
                 </div>
             </div>
         }
+    }
 
+    private handleSpeedChange(event: any) {
+        this.setState({
+            computerSpeed: 1000/event.target.value
+        })
+    }
 
+    private renderSettingsModal() {
+        if (this.state.showSettingsModal) {
+            return <div className="modal">
+                <div className="modal-content">
+                    <button className="close" onClick={this.handleExitModalClick}>&times;</button>
+                    <p>Choose the computer speed</p>
+                    <div className="slidecontainer">
+                        <input type="range" min="0.2" max="5" value={1000/this.state.computerSpeed} onChange={(e) => this.handleSpeedChange(e)} />
+                    </div>
+                    <br></br>
+                    <button onClick={this.handleNewGameClick}> New Game </button>
+                </div>
+            </div>
+        }
     }
 
     render() {
@@ -419,9 +452,11 @@ export class BoardComponent extends React.Component<{}, State> {
                 />
                 {this.renderWinner()}
                 {this.renderNoMoreMoves()}
-                {this.renderModal()}
+                {this.renderNewGameModal()}
+                {this.renderSettingsModal()}
                 <button className='newgamebutton' onClick={this.handleNewGameClick}> New Game </button>
                 <img className='mutebutton' src={this.state.muted === true ? audioOff : audioOn} onClick={() => this.handleMuteClick()} alt='mute' />
+                <img className='settingsbutton' src={settingsCog} onClick={() => this.handleSettingsClick()} alt='settings' />
             </div>
         )
     }

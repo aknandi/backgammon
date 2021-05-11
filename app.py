@@ -7,10 +7,9 @@ from flask_cors import CORS, cross_origin
 
 from src.board import Board
 from src.colour import Colour
-from src.compare_all_moves_strategy import CompareAllMovesSimple, \
-    CompareAllMovesWeightingDistanceAndSingles, \
-    CompareAllMovesWeightingDistanceAndSinglesWithEndGame, \
-    CompareAllMovesWeightingDistanceAndSinglesWithEndGame2
+from src.compare_all_moves_strategy import CompareAllMoves1, \
+    CompareAllMoves3, \
+    CompareAllMoves6
 from src.strategies import MoveRandomPiece, MoveFurthestBackStrategy
 from src.game import Game
 from random import randint
@@ -78,7 +77,7 @@ def game_thread(difficulty):
                         dice_roll.remove(roll)
                         used_die_rolls[0].append(roll)
 
-                    if len(dice_roll) > 0:
+                    if len(dice_roll) > 0 or board.has_game_ended():
                         print('[Game]: Sending move success (middle of go)')
                         move_results.put({
                             'result': 'success'
@@ -103,6 +102,7 @@ def game_thread(difficulty):
                 move['board_after_move'] = self.board_after_your_last_turn.to_json()
                 return move
 
+            set_current_move([])
             print('[Game]: Sending opponents activity (end of game)')
             move_results.put({
                 'result': 'success',
@@ -115,15 +115,15 @@ def game_thread(difficulty):
 
     print(difficulty)
     if difficulty == 'veryeasy':
-        opponent_strategy = MoveFurthestBackStrategy()
+        opponent_strategy = MoveRandomPiece()
     elif difficulty == 'easy':
-        opponent_strategy = CompareAllMovesSimple()
+        opponent_strategy = MoveFurthestBackStrategy()
     elif difficulty == 'medium':
-        opponent_strategy = CompareAllMovesWeightingDistanceAndSingles()
+        opponent_strategy = CompareAllMoves1()
     elif difficulty == 'hard':
-        opponent_strategy = CompareAllMovesWeightingDistanceAndSinglesWithEndGame()
+        opponent_strategy = CompareAllMoves3()
     elif difficulty == 'veryhard':
-        opponent_strategy = CompareAllMovesWeightingDistanceAndSinglesWithEndGame2()
+        opponent_strategy = CompareAllMoves6()
     else:
         raise Exception('Not a valid strategy')
 

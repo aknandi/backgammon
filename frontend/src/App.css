@@ -32,7 +32,14 @@ body {
 
 .mutebutton {
   top: 47.5%;
-  left: 94%;
+  left: 92%;
+  height: 5%;
+  position: absolute;
+}
+
+.settingsbutton {
+  top: 47.5%;
+  left: 96%;
   height: 5%;
   position: absolute;
 }
@@ -96,4 +103,8 @@ body {
 
 .strategy-select {
   width: 100px; 
+}
+
+.slidecontainer {
+  width: 100%; /* Width of the outside container */
 }
